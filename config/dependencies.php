@@ -15,4 +15,3 @@ $configs = array_map(
 );
 
 return array_merge_recursive(...$configs);
-
