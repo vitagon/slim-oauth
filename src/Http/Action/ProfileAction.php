@@ -21,14 +21,6 @@ class ProfileAction implements RequestHandlerInterface
 
     public function handle(Request $request): Response
     {
-
-//        $sessionIdHeader = $request->getHeader('Session-Id');
-//        if ($sessionIdHeader) {
-//            $sessionId = $sessionIdHeader[0];
-//            session_id($sessionId);
-//            session_start(['use_cookies' => 0]);
-//        }
-//        return new JsonResponse(['msg' => $_SESSION['ttt']]);
         return new JsonResponse(['msg' => $this->session->get('msg')]);
     }
 }
