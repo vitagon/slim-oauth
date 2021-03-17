@@ -8,7 +8,6 @@ use Defuse\Crypto\Key;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Key\LocalFileReference;
-use Lcobucci\JWT\Validation\Constraint\IdentifiedBy;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
