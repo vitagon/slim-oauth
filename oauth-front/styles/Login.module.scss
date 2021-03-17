@@ -1,0 +1,37 @@
+.loginRow {
+  width: 100%;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 0.5rem;
+  max-width: 25em;
+  background: #fff;
+  overflow: hidden;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a202c;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.signInText {
+  text-align: center;
+  color: #718096;
+  font-size: 1.5em;
+}
+
+.forgetPwdLink {
+  float: right;
+}
+
+.bottomBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  background: #f7fafc;
+}

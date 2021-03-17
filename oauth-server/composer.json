@@ -1,6 +1,6 @@
 {
-    "name": "vitalii/oauth-slim",
-    "description": "Slim oauth project",
+    "name": "vitagon/oauth-server",
+    "description": "OAuth server",
     "authors": [
         {
             "name": "Vitalii Goncharov",
