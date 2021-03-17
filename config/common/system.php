@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\OAuth\Repository\AccessTokenRepository;
 use App\OAuth\Repository\ScopeRepository;
+use App\Service\AuthService;
+use App\Service\UserService;
 use Defuse\Crypto\Key;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -15,6 +17,7 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Slim\Middleware\Authentication\JwtAuthentication;
 use Slim\Psr7\Factory\ResponseFactory;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -32,8 +35,7 @@ return [
             'use_cookies' => 0,
         ],
         'auth' => [
-            'signing_key' => realpath(__DIR__ . '/../../storage/keys/oauth/private.key'),
-            'verification_key' => 'mBC5v1sOKVvbdEitdSBenu59nfNfhwkedkJVNabosTw=',
+            'secret' => 'app_secret'
         ],
         'oauth' => [
             'private_key_path' => realpath(__DIR__ . '/../../storage/keys/oauth/private.key'),
@@ -77,17 +79,16 @@ return [
 
         return $server;
     },
-    Configuration::class => function (ContainerInterface $container) {
-        $signingKey = $container->get('config')['auth']['signing_key'];
-        $verificationKey = $container->get('config')['auth']['verification_key'];
+    JwtAuthentication::class => function (ContainerInterface $container) {
+        return new \Slim\Middleware\Authentication\JwtAuthentication($container, [
+            'secure' => false,
+            'secret' => $container->get('config')['auth']['secret'],
+        ]);
+    },
+    AuthService::class => function (ContainerInterface $container) {
+        $userService = $container->get(UserService::class);
+        $jwtSecret = $container->get('config')['auth']['secret'];
 
-        $config =  Configuration::forAsymmetricSigner(
-            new \Lcobucci\JWT\Signer\Hmac\Sha256(),
-            LocalFileReference::file($signingKey),
-            InMemory::base64Encoded($verificationKey),
-        );
-
-        $config->setValidationConstraints();
-        return $config;
+        return new AuthService($userService, $jwtSecret);
     }
 ];

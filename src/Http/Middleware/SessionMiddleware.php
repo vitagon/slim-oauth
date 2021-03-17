@@ -28,7 +28,7 @@ class SessionMiddleware implements MiddlewareInterface
         $this->session->start();
 
         $response = $handler->handle($request);
-        $response = $response->withHeader('Session-Id', $this->session->get());
+        $response = $response->withHeader('Session-Id', $this->session->getId());
 
         return $response;
     }
