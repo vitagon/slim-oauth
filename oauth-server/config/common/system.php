@@ -7,9 +7,6 @@ use App\OAuth\Repository\ScopeRepository;
 use App\Service\AuthService;
 use App\Service\UserService;
 use Defuse\Crypto\Key;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Signer\Key\LocalFileReference;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -18,7 +15,7 @@ use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Slim\Middleware\Authentication\JwtAuthentication;
-use Slim\Psr7\Factory\ResponseFactory;
+use App\Http\Kernel\ResponseFactory;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
@@ -27,8 +24,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 return [
     'config' => [
-//        'debug' => (bool)getenv('APP_DEBUG')
-        'debug' => true,
+        'debug' => (bool)getenv('APP_DEBUG'),
         'session' => [
             'name' => 'slimo_auth',
             'cache_expire' => 0,
@@ -90,5 +86,6 @@ return [
         $jwtSecret = $container->get('config')['auth']['secret'];
 
         return new AuthService($userService, $jwtSecret);
-    }
+    },
+
 ];

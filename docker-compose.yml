@@ -55,6 +55,7 @@ services:
     image: ${COMPOSE_PROJECT_NAME}_php-fpm
     environment:
       APP_DEBUG: 1
+      APP_FRONT_DOMAIN: 'http://company.loc'
       PHP_IDE_CONFIG: serverName=Docker
     depends_on:
       - mysql
@@ -107,6 +108,8 @@ services:
       - ./oauth-front:/app
     command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run dev"
     tty: true
+    environment:
+      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://auth.company.loc'
 
   frontend_node-cli:
     build:

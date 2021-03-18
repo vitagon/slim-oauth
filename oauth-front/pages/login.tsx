@@ -1,8 +1,20 @@
 import React from 'react';
 import styles from '@/styles/Login.module.scss';
 import classNames from 'classnames';
+import Http from '@/http';
 
-class Login extends React.Component<any, any> {
+interface State {
+  form: {
+    login: string,
+    password: string,
+  },
+  errors: {
+    login: string,
+    password: string,
+  }
+}
+
+class Login extends React.Component<any, State> {
 
   static layout: string;
 
@@ -22,30 +34,16 @@ class Login extends React.Component<any, any> {
 
   login = async () => {
     console.log(this.state.form);
+    let data = null;
     try {
-      const reqOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(this.state.form),
-        credentials: 'include'
-      }
-
-      // @ts-ignore
-      let res = await fetch('http://auth.company.loc/login', reqOptions);
-      let data = await res.text();
-
-      if (!res.ok) {
-        let err = new Error(res.statusText);
-        // @ts-ignore
-        err.response = res;
-        throw err;
-      }
+      let res = await Http.post('/login', this.state.form);
+      data = res.data;
     } catch (e) {
       console.error(e);
+      throw e;
     }
+
+    localStorage.setItem('auth.token', data.token);
   }
 
   changeFormVal = (e) => {

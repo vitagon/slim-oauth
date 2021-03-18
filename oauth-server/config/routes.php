@@ -6,6 +6,7 @@ use App\Http\Action\AuthorizationAction;
 use App\Http\Action\HomeAction;
 use App\Http\Action\JwtAction;
 use App\Http\Action\LoginAction;
+use App\Http\Action\Options\LoginOptionsAction;
 use App\Http\Action\ProfileAction;
 use Slim\App;
 use Slim\Middleware\Authentication\JwtAuthentication;
@@ -13,7 +14,10 @@ use Slim\Routing\RouteCollectorProxy;
 
 return static function (App $app): void {
     $app->get('/', HomeAction::class);
+
     $app->post('/login', LoginAction::class);
+    $app->options('/login', LoginOptionsAction::class);
+
     $app->get('/profile', ProfileAction::class)
         ->add($app->getContainer()->get(JwtAuthentication::class));
 
@@ -23,4 +27,5 @@ return static function (App $app): void {
 
     $app->get('/jwt', JwtAction::class);
 //    $app->get('/jwt/validate', \App\Http\Action\ValidateJwtAction::class);
+
 };

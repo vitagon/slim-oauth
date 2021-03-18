@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http;
+namespace App\Http\Kernel;
 
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Headers;
-use Slim\Psr7\Response;
 
-class JsonResponse extends Response
+class JsonResponse extends BaseResponse
 {
     public function __construct($data, $status = 200, $headers = []) {
         parent::__construct(

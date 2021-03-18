@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Action;
 
-use App\Http\JsonResponse;
+use App\Http\Kernel\JsonResponse;
 use App\Service\AuthService;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpException;
+use Slim\Psr7\Cookies;
 
 class LoginAction implements RequestHandlerInterface
 {
@@ -34,10 +35,24 @@ class LoginAction implements RequestHandlerInterface
             throw new HttpException($request, 'Invalid credentials', 401);
         }
 
-        return new JsonResponse([
+        $token = $this->authService->createToken($user);
+        $cookies = (new Cookies())
+            ->set('_token', [
+                'value' => $token,
+                'path' => '/',
+                'expires' => time() + 3600,
+                'domain' => 'company.loc'
+            ]);
+
+        $response = new JsonResponse([
             'user' => $user,
             'password' => password_hash('123123', PASSWORD_BCRYPT),
-            'token' => $this->authService->createToken($user),
+            'token' => $token,
+        ], 200, [
+            'Access-Control-Allow-Origin' => getenv('APP_FRONT_DOMAIN'),
+            'Access-Control-Allow-Headers' => '*',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
         ]);
+        return $response->withCookies($cookies);
     }
 }

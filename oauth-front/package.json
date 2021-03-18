@@ -8,13 +8,16 @@
     "start": "next start"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "classnames": "^2.2.6",
+    "cookie": "^0.4.1",
     "next": "10.0.8",
     "next-redux-wrapper": "^6.0.2",
     "nprogress": "^0.2.0",
     "react": "17.0.1",
     "react-bootstrap": "^1.5.1",
+    "react-cookie": "^4.0.3",
     "react-dom": "17.0.1",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
