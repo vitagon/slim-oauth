@@ -15,8 +15,9 @@ class LoginOptionsAction implements RequestHandlerInterface
     {
         return new JsonResponse([], 200, [
             'Access-Control-Allow-Origin' => getenv('APP_FRONT_DOMAIN'),
-            'Access-Control-Allow-Headers' => '*',
+            'Access-Control-Allow-Headers' => '*, Content-Type',
             'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+            'Access-Control-Allow-Credentials' => 'true',
         ]);
     }
 }

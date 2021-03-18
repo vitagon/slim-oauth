@@ -41,7 +41,7 @@ class LoginAction implements RequestHandlerInterface
                 'value' => $token,
                 'path' => '/',
                 'expires' => time() + 3600,
-                'domain' => 'company.loc'
+                'domain' => sprintf('.%s', parse_url(getenv('APP_FRONT_DOMAIN'), PHP_URL_HOST)),
             ]);
 
         $response = new JsonResponse([
@@ -50,8 +50,9 @@ class LoginAction implements RequestHandlerInterface
             'token' => $token,
         ], 200, [
             'Access-Control-Allow-Origin' => getenv('APP_FRONT_DOMAIN'),
-            'Access-Control-Allow-Headers' => '*',
+            'Access-Control-Allow-Headers' => '*, Content-Type',
             'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+            'Access-Control-Allow-Credentials' => 'true',
         ]);
         return $response->withCookies($cookies);
     }

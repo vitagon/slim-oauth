@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Action;
 
-use App\Http\JsonResponse;
+use App\Http\Kernel\JsonResponse;
 use App\Service\HttpService;
 use App\Service\UserService;
 use Firebase\JWT\JWT;
