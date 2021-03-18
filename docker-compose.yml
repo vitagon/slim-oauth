@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+
+  # Shared services
+  #>
+  nginx:
+    image: nginx:1.19-alpine
+    depends_on:
+      - backend_nginx
+      - frontend_nginx
+    ports:
+      - 80:80
+      - 8007:8007
+    volumes:
+      - ./docker/dev/gateway/conf.d:/etc/nginx/conf.d
+      - ./docker/dev/gateway/snippets:/etc/nginx/snippets
+    networks:
+      default:
+      company:
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - company_db:/var/lib/mysql
+      - ./oauth-server/docker/dev/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: company
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: root
+  #<
+
+  # Backend services
+  #>
+  backend_php-fpm:
+    build:
+      context: oauth-server/docker
+      dockerfile: dev/php-fpm/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}_php-fpm
+    environment:
+      APP_DEBUG: 1
+      PHP_IDE_CONFIG: serverName=Docker
+    depends_on:
+      - mysql
+    volumes:
+      - ./oauth-server:/app
+      - /var/run/mysqld:/var/run/mysqld
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  backend_nginx:
+    build:
+      context: oauth-server/docker
+      dockerfile: dev/nginx/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}_nginx
+    depends_on:
+      - backend_php-fpm
+    expose:
+      - ${BACKEND_SERVER_PORT}
+    ports:
+      - 127.0.0.1:${BACKEND_SERVER_PORT}:80
+    volumes:
+      - ./oauth-server:/app
+    environment:
+      SERVER_PORT: ${BACKEND_SERVER_PORT}
+    networks:
+      default:
+      company:
+        aliases:
+          - backend_nginx
+  #<
+
+  # Frontend services
+  #>
+  frontend_nginx:
+    build:
+      context: oauth-front/docker
+      dockerfile: dev/nginx/Dockerfile
+    expose:
+      - ${FRONTEND_SERVER_PORT}
+    ports:
+      - 127.0.0.1:${FRONTEND_SERVER_PORT}:80
+    volumes:
+      - ./oauth-front:/app
+
+  frontend_node:
+    build:
+      context: oauth-front/docker
+      dockerfile: dev/node/Dockerfile
+    volumes:
+      - ./oauth-front:/app
+    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run dev"
+    tty: true
+
+  frontend_node-cli:
+    build:
+      context: oauth-front/docker
+      dockerfile: dev/node/Dockerfile
+    volumes:
+      - ./oauth-front:/app
+  #<
+
+volumes:
+  company_db: {}
+
+networks:
+  company:
+    driver: bridge
+    name: ${NETWORK_NAME}

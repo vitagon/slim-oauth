@@ -43,8 +43,8 @@ class DefaultLayout extends React.Component<any, any> {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Link href="/parts/catalog">
-                <a className="nav-link" onClick={this.closeNav}>Catalog</a>
+              <Link href="/">
+                <a className="nav-link" onClick={this.closeNav}>Home</a>
               </Link>
             </Nav>
           </Navbar.Collapse>
