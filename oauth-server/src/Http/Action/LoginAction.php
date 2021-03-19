@@ -44,7 +44,7 @@ class LoginAction implements RequestHandlerInterface
         ]);
 
         $cookies = (new Cookies())
-            ->set('_token', [
+            ->set('X-Auth', [
                 'value' => $token,
                 'path' => '/',
                 'expires' => time() + 3600,

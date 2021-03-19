@@ -1,6 +1,7 @@
 import React from 'react';
 import Http from '@/http';
 import { parseCookies } from '@/helpers/cookies';
+import withLayout from '@/hoc/withLayout';
 
 class Profile extends React.Component<any, any> {
 
@@ -9,17 +10,12 @@ class Profile extends React.Component<any, any> {
     this.state = {
       user: null
     }
-
   }
 
   async componentDidMount() {
     let data = null;
     try {
-      let res = await Http.get('/profile', {
-        headers: {
-          cookie: document.cookie
-        }
-      });
+      let res = await Http.get('/profile');
       data = res.data;
     } catch (e) {
       console.error(e);
@@ -31,9 +27,13 @@ class Profile extends React.Component<any, any> {
 
   render() {
     return (
-      <div>{JSON.stringify(this.state.user)}</div>
+      <div className="row">
+        <div className="col-md-12" style={{ wordBreak: 'break-all'}}>
+          {JSON.stringify(this.state.user)}
+        </div>
+      </div>
     )
   }
 }
 
-export default Profile;
+export default withLayout(Profile);

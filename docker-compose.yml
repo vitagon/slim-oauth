@@ -109,7 +109,7 @@ services:
     command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run dev"
     tty: true
     environment:
-      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://auth.company.loc'
+      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://backend_nginx'
 
   frontend_node-cli:
     build:

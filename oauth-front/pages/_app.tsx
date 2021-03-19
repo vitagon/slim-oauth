@@ -1,6 +1,5 @@
 import App from "next/app";
 import { wrapper } from '@/store';
-import LayoutWrapper from "@/layouts/LayoutWrapper";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/globals.css';
@@ -24,19 +23,17 @@ class MyApp extends App {
 
     return (
       <>
-        <LayoutWrapper {...pageProps}>
-          <NextNprogress
-            color="#29D"
-            startPosition={0.3}
-            stopDelayMs={200}
-            height="3"
-          />
-          <Component {...pageProps} />
-        </LayoutWrapper>
+        <NextNprogress
+          color="#29D"
+          startPosition={0.3}
+          stopDelayMs={200}
+          height="3"
+        />
+        <Component {...pageProps} />
       </>
     );
   }
 }
 
-export default MyApp;
-// export default wrapper.withRedux(MyApp);
+// export default MyApp;
+export default wrapper.withRedux(MyApp);

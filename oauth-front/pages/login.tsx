@@ -2,6 +2,8 @@ import React from 'react';
 import styles from '@/styles/Login.module.scss';
 import classNames from 'classnames';
 import Http from '@/http';
+import { withRouter } from 'next/router';
+import withLayout, { Layouts } from '@/hoc/withLayout';
 
 interface State {
   form: {
@@ -15,8 +17,6 @@ interface State {
 }
 
 class Login extends React.Component<any, State> {
-
-  static layout: string;
 
   constructor(props) {
     super(props);
@@ -33,7 +33,6 @@ class Login extends React.Component<any, State> {
   }
 
   login = async () => {
-    console.log(this.state.form);
     let data = null;
     try {
       let res = await Http.post('/login', this.state.form);
@@ -43,7 +42,7 @@ class Login extends React.Component<any, State> {
       throw e;
     }
 
-    localStorage.setItem('auth.token', data.token);
+    this.props.router.push('/profile');
   }
 
   changeFormVal = (e) => {
@@ -136,6 +135,4 @@ class Login extends React.Component<any, State> {
   }
 }
 
-Login.layout = 'fullPage';
-
-export default Login;
+export default withRouter(withLayout(Login, Layouts.fullPage));

@@ -10,6 +10,24 @@ class HttpService
 {
     public function getToken(ServerRequestInterface $request): string
     {
+        $token = $this->getTokenFromCookie($request);
+        if (!$token) {
+            $token = $this->getTokenFromHeader($request);
+        }
+        return $token;
+    }
+
+    private function getTokenFromCookie(ServerRequestInterface $request): ?string
+    {
+        $cookies = $request->getCookieParams();
+        if (!isset($cookies['_token'])) {
+            return null;
+        }
+        return $cookies['_token'];
+    }
+
+    private function getTokenFromHeader(ServerRequestInterface $request): ?string
+    {
         $authHeader = $request->getHeader('Authorization');
         $authHeaderVal = $authHeader ? $authHeader[0] : null;
 

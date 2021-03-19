@@ -7,7 +7,6 @@ namespace App\Http\Action;
 use App\Http\Kernel\JsonResponse;
 use App\Service\HttpService;
 use App\Service\UserService;
-use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -28,11 +27,8 @@ class ProfileAction implements RequestHandlerInterface
 
     public function handle(Request $request): Response
     {
-        $token = $this->httpService->getToken($request);
-        $jwt = JWT::decode($token, 'app_secret', ['HS256']);
-        $jwtArr = (array) $jwt;
-
-        $user = $this->userService->getUser($jwtArr['uid']);
+        $token = $request->getAttribute('token');
+        $user = $this->userService->getUser($token->uid);
 
         return new JsonResponse([
 //            'msg' => $this->session->get('msg'),

@@ -1,10 +1,9 @@
 import React from 'react';
 import Link from "next/link";
-import { Nav, Navbar, Form, Row, Col, Container } from 'react-bootstrap';
+import { Nav, Navbar, Form, Row, Col, Container, Dropdown, DropdownButton } from 'react-bootstrap';
 import styles from './Default.module.scss';
 
 class DefaultLayout extends React.Component<any, any> {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -29,6 +28,10 @@ class DefaultLayout extends React.Component<any, any> {
     this.setState({ navExpanded: false });
   }
 
+  logout = () => {
+
+  }
+
   render() {
     return (
       <>
@@ -46,6 +49,22 @@ class DefaultLayout extends React.Component<any, any> {
               <Link href="/">
                 <a className="nav-link" onClick={this.closeNav}>Home</a>
               </Link>
+            </Nav>
+
+            <Nav>
+              {!this.props.user && (
+                  <Link href="/login">
+                    <a className="nav-link" onClick={this.closeNav}>Login</a>
+                  </Link>
+              )}
+
+              <DropdownButton
+                  menuAlign="right"
+                  title={this.props.user?.name}
+                  id="dropdown-menu-align-right"
+              >
+                <Dropdown.Item eventKey="1" onClick={this.logout}>Logout</Dropdown.Item>
+              </DropdownButton>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
