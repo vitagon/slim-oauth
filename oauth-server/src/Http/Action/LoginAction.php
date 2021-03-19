@@ -36,6 +36,13 @@ class LoginAction implements RequestHandlerInterface
         }
 
         $token = $this->authService->createToken($user);
+
+        $response = new JsonResponse([
+            'user' => $user,
+            'password' => password_hash('123123', PASSWORD_BCRYPT),
+            'token' => $token,
+        ]);
+
         $cookies = (new Cookies())
             ->set('_token', [
                 'value' => $token,
@@ -44,16 +51,6 @@ class LoginAction implements RequestHandlerInterface
                 'domain' => sprintf('.%s', parse_url(getenv('APP_FRONT_DOMAIN'), PHP_URL_HOST)),
             ]);
 
-        $response = new JsonResponse([
-            'user' => $user,
-            'password' => password_hash('123123', PASSWORD_BCRYPT),
-            'token' => $token,
-        ], 200, [
-            'Access-Control-Allow-Origin' => getenv('APP_FRONT_DOMAIN'),
-            'Access-Control-Allow-Headers' => '*, Content-Type',
-            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-            'Access-Control-Allow-Credentials' => 'true',
-        ]);
         return $response->withCookies($cookies);
     }
 }
