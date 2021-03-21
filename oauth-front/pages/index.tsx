@@ -19,10 +19,12 @@ const Home = (props) => {
 
 export async function getServerSideProps(ctx) {
     let data = null;
+    console.log(ctx.req.headers)
     try {
         let res = await Http.get('/profile', {
             headers: {
-                'Authorization': 'Bearer ' + ctx.req.cookies['X-Auth']
+                cookie: ctx.req.headers.cookie
+                // 'Authorization': 'Bearer ' + ctx.req.cookies['X-Auth']
             }
         });
         data = res.data;

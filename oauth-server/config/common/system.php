@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Http\Logger\CustomLineFormatter;
+use App\Http\Logger\CustomStreamHandler;
 use App\OAuth\Repository\AccessTokenRepository;
 use App\OAuth\Repository\ScopeRepository;
 use App\Service\AuthService;
@@ -12,8 +14,12 @@ use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Log\LoggerInterface;
 use Slim\Middleware\Authentication\JwtAuthentication;
 use App\Http\Kernel\ResponseFactory;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -39,7 +45,13 @@ return [
             // this key should be moved out of git
             'encryption_key' => 'def00000f155cfea59d464403bcfc897e5fdbb444ca874cba8f6f5a507694f'
                                 . 'b07e0fd636dda59e51f5b0deb3c16669c7e9ac2bc72d9de21e2c41e0033edecc20d653f024',
-        ]
+        ],
+        'logger' => [
+            'name' => 'slim-app',
+//            'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+            'path' => realpath(__DIR__ . '/../../logs/app.log'),
+            'level' => Logger::DEBUG,
+        ],
     ],
     ResponseFactoryInterface::class => DI\get(ResponseFactory::class),
     Session::class => function (ContainerInterface $container) {
@@ -54,6 +66,7 @@ return [
     ClientRepositoryInterface::class => DI\get(\App\OAuth\Repository\ClientRepository::class),
     AccessTokenRepositoryInterface::class => DI\get(AccessTokenRepository::class),
     ScopeRepositoryInterface::class => DI\get(ScopeRepository::class),
+
     AuthorizationServer::class => function (ContainerInterface $container) {
         $clientRepository = $container->get(ClientRepositoryInterface::class);
         $accessTokenRepository = $container->get(AccessTokenRepositoryInterface::class);
@@ -87,5 +100,18 @@ return [
 
         return new AuthService($userService, $jwtSecret);
     },
+    LoggerInterface::class => function (ContainerInterface $container) {
+        $loggerSettings = $container->get('config')['logger'];
+        $logger = new Logger($loggerSettings['name']);
 
+        $processor = new UidProcessor();
+        $logger->pushProcessor($processor);
+
+        $handler = new StreamHandler($loggerSettings['path'], $loggerSettings['level']);
+        $lineFormatter = new CustomLineFormatter(null, null, true);
+        $handler->setFormatter($lineFormatter);
+        $logger->pushHandler($handler);
+
+        return $logger;
+    },
 ];

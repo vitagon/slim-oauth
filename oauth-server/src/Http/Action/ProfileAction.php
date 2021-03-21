@@ -5,23 +5,20 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
-use App\Service\HttpService;
 use App\Service\UserService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Psr\Log\LoggerInterface;
 
 class ProfileAction implements RequestHandlerInterface
 {
-    private Session $session;
-    private HttpService $httpService;
+    private LoggerInterface $logger;
     private UserService $userService;
 
-    public function __construct(Session $session, HttpService $httpService, UserService $userService)
+    public function __construct(LoggerInterface $logger, UserService $userService)
     {
-        $this->session = $session;
-        $this->httpService = $httpService;
+        $this->logger = $logger;
         $this->userService = $userService;
     }
 
@@ -31,10 +28,6 @@ class ProfileAction implements RequestHandlerInterface
         $user = $this->userService->getUser($token->uid);
 
         return new JsonResponse([
-//            'msg' => $this->session->get('msg'),
-//            'token' => $token,
-//            'jwt' => $jwtArr,
-//            'password' => password_hash('123123', PASSWORD_BCRYPT),
             'user' => $user
         ]);
     }

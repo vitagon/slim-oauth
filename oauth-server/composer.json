@@ -18,7 +18,8 @@
         "madesimple/slim-auth": "^2.0",
         "firebase/php-jwt": "^5.2",
         "nesbot/carbon": "^2.46",
-        "doctrine/orm": "^2.8"
+        "doctrine/orm": "^2.8",
+        "monolog/monolog": "^2.2"
     },
     "autoload": {
         "psr-4": {

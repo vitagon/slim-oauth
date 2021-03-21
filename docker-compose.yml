@@ -53,6 +53,7 @@ services:
       context: oauth-server/docker
       dockerfile: dev/php-fpm/Dockerfile
     image: ${COMPOSE_PROJECT_NAME}_php-fpm
+    user: '1000:1000'
     environment:
       APP_DEBUG: 1
       APP_FRONT_DOMAIN: 'http://company.loc'
@@ -109,7 +110,8 @@ services:
     command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run dev"
     tty: true
     environment:
-      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://backend_nginx'
+      AUTH_SERVER_URL: 'http://backend_nginx'
+      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://auth.company.loc'
 
   frontend_node-cli:
     build:
