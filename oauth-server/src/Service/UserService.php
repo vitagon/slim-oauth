@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use JetBrains\PhpStorm\Pure;
+
 class UserService
 {
     private array $users = [];
@@ -20,6 +22,7 @@ class UserService
         ];
     }
 
+    #[Pure]
     public function getUser(int $id): ?array
     {
         $userKey = array_search($id, array_column($this->users, 'id'));

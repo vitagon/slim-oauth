@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Carbon\Carbon;
-use DateTime;
 use Exception;
 use Firebase\JWT\JWT;
 

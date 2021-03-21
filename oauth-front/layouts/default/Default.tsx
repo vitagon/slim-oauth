@@ -63,7 +63,10 @@ class DefaultLayout extends React.Component<any, any> {
                   title={this.props.user?.name}
                   id="dropdown-menu-align-right"
               >
-                <Dropdown.Item eventKey="1" onClick={this.logout}>Logout</Dropdown.Item>
+                <Link href="/profile" >
+                  <a className="dropdown-item" onClick={this.closeNav}>Profile</a>
+                </Link>
+                <Dropdown.Item eventKey="2" onClick={this.logout}>Logout</Dropdown.Item>
               </DropdownButton>
             </Nav>
           </Navbar.Collapse>

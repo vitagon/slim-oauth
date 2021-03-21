@@ -1,7 +1,3 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
-import { wrapper } from '@/store';
-import withLayout from '@/hoc/withLayout';
 import DefaultLayout from '@/layouts/default/Default';
 import Http from '@/http';
 
@@ -22,10 +18,7 @@ export async function getServerSideProps(ctx) {
     console.log(ctx.req.headers)
     try {
         let res = await Http.get('/profile', {
-            headers: {
-                cookie: ctx.req.headers.cookie
-                // 'Authorization': 'Bearer ' + ctx.req.cookies['X-Auth']
-            }
+            headers: { cookie: ctx.req.headers.cookie }
         });
         data = res.data;
     } catch (e) {

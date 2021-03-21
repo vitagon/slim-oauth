@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Http\Logger\CustomLineFormatter;
-use App\Http\Logger\CustomStreamHandler;
 use App\OAuth\Repository\AccessTokenRepository;
 use App\OAuth\Repository\ScopeRepository;
 use App\Service\AuthService;
@@ -48,8 +47,7 @@ return [
         ],
         'logger' => [
             'name' => 'slim-app',
-//            'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
-            'path' => realpath(__DIR__ . '/../../logs/app.log'),
+            'path' => isset($_ENV['docker']) ? 'php://stdout' : realpath(__DIR__ . '/../../logs/app.log'),
             'level' => Logger::DEBUG,
         ],
     ],
