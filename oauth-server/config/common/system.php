@@ -5,12 +5,15 @@ declare(strict_types=1);
 use App\Http\Logger\CustomLineFormatter;
 use App\OAuth\Repository\AccessTokenRepository;
 use App\OAuth\Repository\ClientRepository;
+use App\OAuth\Repository\RefreshTokenRepository;
 use App\OAuth\Repository\ScopeRepository;
+use App\OAuth\Repository\UserRepository;
 use App\Service\AuthService;
 use App\Service\UserService;
 use Defuse\Crypto\Key;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\ImplicitGrant;
+use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
@@ -79,6 +82,17 @@ return [
             $scopeRepository,
             $privateKey,
             Key::loadFromAsciiSafeString($container->get('config')['oauth']['encryption_key'])
+        );
+
+        $passwordGrant = new PasswordGrant(
+            new UserRepository(),
+            new RefreshTokenRepository()
+        );
+        $passwordGrant->setRefreshTokenTTL(new DateInterval('P1M')); // refresh tokens will expire after 1 month
+
+        $server->enableGrantType(
+            $passwordGrant,
+            new DateInterval('PT1H') // access tokens will expire after 1 hour
         );
 
         $server->enableGrantType(

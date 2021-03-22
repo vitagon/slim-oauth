@@ -9,6 +9,7 @@ use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Psr7\Stream;
 
 class AuthorizationAction
 {
@@ -49,10 +50,10 @@ class AuthorizationAction
         } catch (\Exception $exception) {
 
             // Unknown exception
-//            $body = new Stream('php://temp', 'r+');
-//            $body->write($exception->getMessage());
-//            return $response->withStatus(500)->withBody($body);
-            return $response->withStatus(500);
+            $body = new Stream('php://temp', 'r+');
+            $body->write($exception->getMessage());
+            return $response->withStatus(500)->withBody($body);
+//            return $response->withStatus(500);
 
         }
     }
