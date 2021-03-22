@@ -27,8 +27,6 @@ class ProfileAction implements RequestHandlerInterface
         $token = $request->getAttribute('token');
         $user = $this->userService->getUser($token->uid);
 
-        return new JsonResponse([
-            'user' => $user
-        ]);
+        return new JsonResponse(['user' => $user]);
     }
 }
