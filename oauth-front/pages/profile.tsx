@@ -1,6 +1,7 @@
 import React from 'react';
-import Http from '@/http';
 import DefaultLayout from "@/layouts/default/Default";
+import { wrapper } from '@/store';
+import { getUser } from '@/services/AuthService';
 
 class Profile extends React.Component<any, any> {
 
@@ -13,7 +14,7 @@ class Profile extends React.Component<any, any> {
 
     render() {
         return (
-            <DefaultLayout user={this.props.user}>
+            <DefaultLayout>
                 <div className="row">
                     <div className="col-md-12" style={{wordBreak: 'break-all'}}>
                         {JSON.stringify(this.props.user)}
@@ -24,25 +25,21 @@ class Profile extends React.Component<any, any> {
     }
 }
 
-export async function getServerSideProps(ctx) {
-    let data = null;
-    try {
-        let res = await Http.get('/profile', {
-            headers: { cookie: ctx.req.headers.cookie }
-        });
-        data = res.data;
-    } catch (e) {
-        console.error(e);
-        ctx.res.setHeader('Location', '/');
-        ctx.res.statusCode = 302;
-        return;
-    }
+export const getServerSideProps = wrapper.getServerSideProps(
+    async ({ store , req, res}) => {
+        let user = await getUser(req.headers.cookie);
 
-    return {
-        props: {
-            user: data ? data.user : null
+        if (!user) {
+            res.setHeader('Location', '/');
+            res.statusCode = 302;
+            return;
         }
+
+        store.dispatch({
+            type: 'SET_USER',
+            payload: user
+        })
     }
-}
+)
 
 export default Profile;

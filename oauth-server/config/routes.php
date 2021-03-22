@@ -25,7 +25,6 @@ return static function (App $app): void {
     })->add($app->getContainer()->get(JwtAuthentication::class));
 
     $app->get('/jwt', JwtAction::class);
-//    $app->get('/jwt/validate', \App\Http\Action\ValidateJwtAction::class);
 
     $app->options('/{routes:.+}', OptionsAction::class);
 };

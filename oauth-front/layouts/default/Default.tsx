@@ -4,6 +4,7 @@ import { Nav, Navbar, Row, Col, Container, Dropdown, DropdownButton } from 'reac
 import styles from './Default.module.scss';
 import Cookies from 'js-cookie';
 import { withRouter } from 'next/router';
+import { connect } from 'react-redux';
 
 class DefaultLayout extends React.Component<any, any> {
 
@@ -88,4 +89,8 @@ class DefaultLayout extends React.Component<any, any> {
     }
 }
 
-export default withRouter(DefaultLayout);
+const mapStateToProps = (state) => ({
+   user: state.AuthReducer.user
+});
+
+export default withRouter(connect(mapStateToProps)(DefaultLayout));

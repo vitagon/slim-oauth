@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Logger\CustomLineFormatter;
 use App\OAuth\Repository\AccessTokenRepository;
+use App\OAuth\Repository\ClientRepository;
 use App\OAuth\Repository\ScopeRepository;
 use App\Service\AuthService;
 use App\Service\UserService;
@@ -51,17 +52,18 @@ return [
             'level' => Logger::DEBUG,
         ],
     ],
+
     ResponseFactoryInterface::class => DI\get(ResponseFactory::class),
     Session::class => function (ContainerInterface $container) {
         $settings = $container->get('config')['session'];
         if (PHP_SAPI === 'cli') {
             return new Session(new MockArraySessionStorage());
-        } else {
-            return new Session(new NativeSessionStorage($settings, new NativeFileSessionHandler()));
         }
+
+        return new Session(new NativeSessionStorage($settings, new NativeFileSessionHandler()));
     },
     SessionInterface::class => DI\get(Session::class),
-    ClientRepositoryInterface::class => DI\get(\App\OAuth\Repository\ClientRepository::class),
+    ClientRepositoryInterface::class => DI\get(ClientRepository::class),
     AccessTokenRepositoryInterface::class => DI\get(AccessTokenRepository::class),
     ScopeRepositoryInterface::class => DI\get(ScopeRepository::class),
 

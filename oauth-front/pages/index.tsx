@@ -1,36 +1,48 @@
+import React from 'react';
 import DefaultLayout from '@/layouts/default/Default';
-import Http from '@/http';
+import { wrapper } from '@/store';
+import { connect } from 'react-redux';
+import { getUser } from '@/services/AuthService';
+import types from '@/store/auth/types';
+import { bindActionCreators } from 'redux';
 
-const Home = (props) => {
-    return (
-        <DefaultLayout user={props.user}>
-            <div className="row">
-                <div className="col-md-12">
-                    {props.message}
+class Home extends React.Component<any, any> {
+    render() {
+        return (
+            <DefaultLayout>
+                <div className="row">
+                    <div className="col-md-12">
+                        Home page accessible without authentication
+                        <div>
+                            User: {JSON.stringify(this.props.reduxUser)}
+                        </div>
+                        <button onClick={() => this.props.setMessage('test')}>Set message</button>
+                    </div>
                 </div>
-            </div>
-        </DefaultLayout>
-    )
+            </DefaultLayout>
+        );
+    }
 }
 
-export async function getServerSideProps(ctx) {
-    let data = null;
-    console.log(ctx.req.headers)
-    try {
-        let res = await Http.get('/profile', {
-            headers: { cookie: ctx.req.headers.cookie }
-        });
-        data = res.data;
-    } catch (e) {
-        console.log(e);
-    }
+export const getServerSideProps = wrapper.getServerSideProps(
+    async ({ store , req}) => {
+        let user = await getUser(req.headers.cookie);
 
-    return {
-        props: {
-            message: 'gg',
-            user: data ? data.user : null
+        if (user) {
+            store.dispatch({
+                type: types.SET_USER,
+                payload: user
+            })
         }
     }
-}
+)
 
-export default Home;
+const mapStateToProps = (state) => ({
+    reduxUser: state.AuthReducer.user
+});
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    setMessage: (msg) => (dispatch) => dispatch({ type: 'SET_MESSAGE', payload: msg })
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
