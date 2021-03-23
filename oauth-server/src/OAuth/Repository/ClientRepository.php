@@ -6,7 +6,6 @@ namespace App\OAuth\Repository;
 
 use App\OAuth\Model\ClientEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
-use League\OAuth2\Server\Entities\Traits\ClientTrait;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface

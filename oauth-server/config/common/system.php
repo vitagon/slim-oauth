@@ -17,6 +17,7 @@ use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
+use League\OAuth2\Server\ResourceServer;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -43,7 +44,17 @@ return [
             'secret' => 'app_secret'
         ],
         'oauth' => [
-            'private_key_path' => realpath(__DIR__ . '/../../storage/keys/oauth/private.key'),
+            'private_key_path' => sprintf(
+                '%s%s',
+                'file://',
+                realpath(__DIR__ . '/../../storage/keys/oauth/private.key')
+            ),
+
+            'public_key_path' => sprintf(
+                '%s%s',
+                'file://',
+                realpath(__DIR__ . '/../../storage/keys/oauth/public.key')
+            ),
 
             // this key should be moved out of git
             'encryption_key' => 'def00000f155cfea59d464403bcfc897e5fdbb444ca874cba8f6f5a507694f'
@@ -74,7 +85,7 @@ return [
         $clientRepository = $container->get(ClientRepositoryInterface::class);
         $accessTokenRepository = $container->get(AccessTokenRepositoryInterface::class);
         $scopeRepository = $container->get(ScopeRepositoryInterface::class);
-        $privateKey = 'file://' . $container->get('config')['oauth']['private_key_path'];
+        $privateKey = $container->get('config')['oauth']['private_key_path'];
 
         $server = new AuthorizationServer(
             $clientRepository,
@@ -101,6 +112,12 @@ return [
         );
 
         return $server;
+    },
+    ResourceServer::class => function (ContainerInterface $container) {
+        $accessTokenRepository = $container->get(AccessTokenRepositoryInterface::class);
+        $publicKey = $container->get('config')['oauth']['public_key_path'];
+
+        return new ResourceServer($accessTokenRepository, $publicKey);
     },
     JwtAuthentication::class => function (ContainerInterface $container) {
         return new \Slim\Middleware\Authentication\JwtAuthentication($container, [

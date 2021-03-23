@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Action\AuthorizationAction;
+use App\Http\Action\ClientAction;
 use App\Http\Action\HomeAction;
 use App\Http\Action\JwtAction;
 use App\Http\Action\LoginAction;
@@ -19,6 +20,8 @@ return static function (App $app): void {
 
     $app->get('/profile', ProfileAction::class)
         ->add($app->getContainer()->get(JwtAuthentication::class));
+
+    $app->get('/client', ClientAction::class);
 
     $app->group('/oauth', function (RouteCollectorProxy $group) {
         $group->get('/authorize', AuthorizationAction::class);
