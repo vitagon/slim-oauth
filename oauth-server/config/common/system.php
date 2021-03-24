@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Logger\CustomLineFormatter;
 use App\OAuth\Repository\AccessTokenRepository;
+use App\OAuth\Repository\AuthCodeRepository;
 use App\OAuth\Repository\ClientRepository;
 use App\OAuth\Repository\RefreshTokenRepository;
 use App\OAuth\Repository\ScopeRepository;
@@ -12,11 +13,16 @@ use App\Service\AuthService;
 use App\Service\UserService;
 use Defuse\Crypto\Key;
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
+use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
+use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\ResourceServer;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -80,11 +86,17 @@ return [
     ClientRepositoryInterface::class => DI\get(ClientRepository::class),
     AccessTokenRepositoryInterface::class => DI\get(AccessTokenRepository::class),
     ScopeRepositoryInterface::class => DI\get(ScopeRepository::class),
+    UserRepositoryInterface::class => DI\get(UserRepository::class),
+    RefreshTokenRepositoryInterface::class => DI\get(RefreshTokenRepository::class),
+    AuthCodeRepositoryInterface::class => DI\get(AuthCodeRepository::class),
 
     AuthorizationServer::class => function (ContainerInterface $container) {
         $clientRepository = $container->get(ClientRepositoryInterface::class);
         $accessTokenRepository = $container->get(AccessTokenRepositoryInterface::class);
         $scopeRepository = $container->get(ScopeRepositoryInterface::class);
+        $userRepository = $container->get(UserRepositoryInterface::class);
+        $refreshTokenRepository = $container->get(RefreshTokenRepositoryInterface::class);
+        $authCodeRepository = $container->get(AuthCodeRepositoryInterface::class);
         $privateKey = $container->get('config')['oauth']['private_key_path'];
 
         $server = new AuthorizationServer(
@@ -96,13 +108,23 @@ return [
         );
 
         $passwordGrant = new PasswordGrant(
-            new UserRepository(),
-            new RefreshTokenRepository()
+            $userRepository,
+            $refreshTokenRepository
         );
         $passwordGrant->setRefreshTokenTTL(new DateInterval('P1M')); // refresh tokens will expire after 1 month
-
         $server->enableGrantType(
             $passwordGrant,
+            new DateInterval('PT1H') // access tokens will expire after 1 hour
+        );
+
+        $grant = new AuthCodeGrant(
+            $authCodeRepository,
+            $refreshTokenRepository,
+            new DateInterval('PT10M') // authorization codes will expire after 10 minutes
+        );
+        $grant->setRefreshTokenTTL(new DateInterval('P1M')); // refresh tokens will expire after 1 month
+        $server->enableGrantType(
+            $grant,
             new DateInterval('PT1H') // access tokens will expire after 1 hour
         );
 

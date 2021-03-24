@@ -41,20 +41,14 @@ class AuthorizationAction
 
             // Return the HTTP redirect response
             return $this->server->completeAuthorizationRequest($authRequest, $response);
-
         } catch (OAuthServerException $exception) {
-
             // All instances of OAuthServerException can be formatted into a HTTP response
             return $exception->generateHttpResponse($response);
-
         } catch (\Exception $exception) {
-
             // Unknown exception
-            $body = new Stream('php://temp', 'r+');
+            $body = new Stream(fopen('php://temp', 'r+'));
             $body->write($exception->getMessage());
             return $response->withStatus(500)->withBody($body);
-//            return $response->withStatus(500);
-
         }
     }
 }

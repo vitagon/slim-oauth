@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Action\AccessTokenAction;
 use App\Http\Action\AuthorizationAction;
 use App\Http\Action\ClientAction;
 use App\Http\Action\HomeAction;
@@ -23,9 +24,11 @@ return static function (App $app): void {
 
     $app->get('/client', ClientAction::class);
 
-    $app->group('/oauth', function (RouteCollectorProxy $group) {
-        $group->get('/authorize', AuthorizationAction::class);
-    })->add($app->getContainer()->get(JwtAuthentication::class));
+    $app->group('/oauth', function (RouteCollectorProxy $group) use ($app) {
+        $group->post('/access_token', AccessTokenAction::class);
+        $group->get('/authorize', AuthorizationAction::class)
+            ->add($app->getContainer()->get(JwtAuthentication::class));
+    });
 
     $app->get('/jwt', JwtAction::class);
 
