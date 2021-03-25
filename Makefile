@@ -16,3 +16,6 @@ frontend-npm-install:
 
 frontend-ready:
 	docker run --rm -v ${PWD}/oauth-front:/app -w /app alpine touch .ready
+
+client-ready:
+	docker run --rm -v ${PWD}/oauth-client:/app -w /app alpine touch .ready

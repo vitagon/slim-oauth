@@ -14,8 +14,8 @@ class ClientRepository implements ClientRepositoryInterface
     {
         return new ClientEntity(
             '899',
-            'test',
-            'http://test.loc/callback',
+            '',
+            'http://client.loc/callback',
             true
         );
     }
