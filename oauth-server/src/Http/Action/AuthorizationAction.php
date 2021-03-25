@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Model\UserEntity;
+use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use League\OAuth2\Server\ResourceServer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Stream;
@@ -14,10 +16,12 @@ use Slim\Psr7\Stream;
 class AuthorizationAction
 {
     private AuthorizationServer $server;
+    private ResourceServer $resourceServer;
 
-    public function __construct(AuthorizationServer $server)
+    public function __construct(AuthorizationServer $server, ResourceServer $resourceServer)
     {
         $this->server = $server;
+        $this->resourceServer = $resourceServer;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -44,7 +48,7 @@ class AuthorizationAction
         } catch (OAuthServerException $exception) {
             // All instances of OAuthServerException can be formatted into a HTTP response
             return $exception->generateHttpResponse($response);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             // Unknown exception
             $body = new Stream(fopen('php://temp', 'r+'));
             $body->write($exception->getMessage());

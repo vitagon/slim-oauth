@@ -10,6 +10,8 @@ use App\Http\Action\JwtAction;
 use App\Http\Action\LoginAction;
 use App\Http\Action\Options\OptionsAction;
 use App\Http\Action\ProfileAction;
+use App\Http\Middleware\ResourceServerMiddleware;
+use League\OAuth2\Server\ResourceServer;
 use Slim\App;
 use Slim\Middleware\Authentication\JwtAuthentication;
 use Slim\Routing\RouteCollectorProxy;
@@ -27,7 +29,7 @@ return static function (App $app): void {
     $app->group('/oauth', function (RouteCollectorProxy $group) use ($app) {
         $group->post('/access_token', AccessTokenAction::class);
         $group->get('/authorize', AuthorizationAction::class)
-            ->add($app->getContainer()->get(JwtAuthentication::class));
+            ->add(new ResourceServerMiddleware($app->getContainer()->get(ResourceServer::class)));
     });
 
     $app->get('/jwt', JwtAction::class);

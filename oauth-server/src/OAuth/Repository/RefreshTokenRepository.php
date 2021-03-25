@@ -12,7 +12,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     public function getNewRefreshToken()
     {
-        // TODO: Implement getNewRefreshToken() method.
+        return new RefreshTokenEntity();
     }
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
@@ -22,11 +22,11 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function revokeRefreshToken($tokenId)
     {
-        return false; // refresh token has not been revoked
+        // TODO: Implement revokeRefreshToken() method
     }
 
     public function isRefreshTokenRevoked($tokenId)
     {
-        return new RefreshTokenEntity();
+        return false;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Stream;
@@ -23,7 +24,7 @@ class AccessTokenAction
         try {
             // Try to respond to the request
             return $this->server->respondToAccessTokenRequest($request, $response);
-        } catch (\League\OAuth2\Server\Exception\OAuthServerException $exception) {
+        } catch (OAuthServerException $exception) {
             // All instances of OAuthServerException can be formatted into a HTTP response
             return $exception->generateHttpResponse($response);
         } catch (\Exception $exception) {

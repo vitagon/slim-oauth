@@ -27,8 +27,6 @@ class ClientAction implements RequestHandlerInterface
         } catch (OAuthServerException $e) {
             throw $e;
         }
-        return new JsonResponse([
-            'user_id' => $req->getAttribute('oauth_user_id')
-        ]);
+        return new JsonResponse($req->getAttributes());
     }
 }

@@ -17,6 +17,7 @@ use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
@@ -128,6 +129,14 @@ return [
             new DateInterval('PT1H') // access tokens will expire after 1 hour
         );
 
+        $refreshTokenGrant = new RefreshTokenGrant($refreshTokenRepository);
+        $refreshTokenGrant->setRefreshTokenTTL(new DateInterval('P1M')); // The refresh token will expire in 1 month
+
+        $server->enableGrantType(
+            $refreshTokenGrant,
+            new DateInterval('PT1H') // The new access token will expire after 1 hour
+        );
+
         $server->enableGrantType(
             new ImplicitGrant(new DateInterval('PT1H')),
             new DateInterval('PT1H')
@@ -142,7 +151,7 @@ return [
         return new ResourceServer($accessTokenRepository, $publicKey);
     },
     JwtAuthentication::class => function (ContainerInterface $container) {
-        return new \Slim\Middleware\Authentication\JwtAuthentication($container, [
+        return new JwtAuthentication($container, [
             'secure' => false,
             'secret' => $container->get('config')['auth']['secret'],
         ]);
