@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Action;
 
+use App\Http\Kernel\ViewResponse;
 use App\Model\UserEntity;
 use Exception;
 use League\OAuth2\Server\AuthorizationServer;
@@ -26,6 +27,9 @@ class AuthorizationAction
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
+        require __DIR__ . '/../../Views/authorize.php';
+        return new ViewResponse();
+
         try {
             // Validate the HTTP request and return an AuthorizationRequest object.
             $authRequest = $this->server->validateAuthorizationRequest($request);
