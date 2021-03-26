@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Http\Kernel\ResponseFactory;
 use App\Http\Logger\CustomLineFormatter;
+use App\Http\Middleware\WebAuthMiddleware;
 use App\OAuth\Repository\AccessTokenRepository;
 use App\OAuth\Repository\AuthCodeRepository;
 use App\OAuth\Repository\ClientRepository;
@@ -13,7 +15,6 @@ use App\Service\AuthService;
 use App\Service\UserService;
 use Defuse\Crypto\Key;
 use League\OAuth2\Server\AuthorizationServer;
-use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
@@ -32,7 +33,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Middleware\Authentication\JwtAuthentication;
-use App\Http\Kernel\ResponseFactory;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
@@ -43,7 +43,7 @@ return [
     'config' => [
         'debug' => (bool)getenv('APP_DEBUG'),
         'session' => [
-            'name' => 'slimo_auth',
+            'name' => 'slim_oauth',
             'cache_expire' => 0,
             'use_cookies' => 0,
         ],
@@ -84,6 +84,10 @@ return [
         return new Session(new NativeSessionStorage($settings, new NativeFileSessionHandler()));
     },
     SessionInterface::class => DI\get(Session::class),
+    WebAuthMiddleware::class => function (ContainerInterface $container) {
+        $session = $container->get(SessionInterface::class);
+        return new WebAuthMiddleware($session);
+    },
     ClientRepositoryInterface::class => DI\get(ClientRepository::class),
     AccessTokenRepositoryInterface::class => DI\get(AccessTokenRepository::class),
     ScopeRepositoryInterface::class => DI\get(ScopeRepository::class),

@@ -12,11 +12,11 @@ class Home extends React.Component<any, any> {
             <DefaultLayout>
                 <div className="row">
                     <div className="col-md-12">
-                        Home page accessible without authentication
+                        Home page is accessible without authentication
                         <div>
                             User: {JSON.stringify(this.props.reduxUser)}
                         </div>
-                        <button onClick={() => this.props.setMessage('test')}>Set message</button>
+                        <button className="btn btn-primary mt-3" onClick={() => this.props.setMessage('test')}>Set message</button>
                     </div>
                 </div>
             </DefaultLayout>

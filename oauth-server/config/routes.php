@@ -8,22 +8,22 @@ use App\Http\Action\ClientAction;
 use App\Http\Action\HomeAction;
 use App\Http\Action\JwtAction;
 use App\Http\Action\LoginAction;
+use App\Http\Action\LogoutAction;
 use App\Http\Action\Options\OptionsAction;
 use App\Http\Action\ProfileAction;
 use App\Http\Middleware\ResourceServerMiddleware;
+use App\Http\Middleware\WebAuthMiddleware;
 use League\OAuth2\Server\ResourceServer;
 use Slim\App;
-use Slim\Middleware\Authentication\JwtAuthentication;
 use Slim\Routing\RouteCollectorProxy;
 
 return static function (App $app): void {
+    $webAuthMiddleware = $app->getContainer()->get(WebAuthMiddleware::class);
+
     $app->get('/', HomeAction::class);
-
-    $app->post('/login', LoginAction::class);
-
-    $app->get('/profile', ProfileAction::class)
-        ->add($app->getContainer()->get(JwtAuthentication::class));
-
+    $app->post('/api/login', LoginAction::class);
+    $app->post('/api/logout', LogoutAction::class);
+    $app->get('/api/profile', ProfileAction::class)->addMiddleware($webAuthMiddleware);
     $app->get('/client', ClientAction::class);
 
     $app->group('/oauth', function (RouteCollectorProxy $group) use ($app) {

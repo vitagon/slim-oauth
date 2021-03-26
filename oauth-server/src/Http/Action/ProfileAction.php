@@ -5,28 +5,27 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
-use App\Service\UserService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ProfileAction implements RequestHandlerInterface
 {
     private LoggerInterface $logger;
-    private UserService $userService;
+    private SessionInterface $session;
 
-    public function __construct(LoggerInterface $logger, UserService $userService)
+    public function __construct(LoggerInterface $logger, SessionInterface $session)
     {
         $this->logger = $logger;
-        $this->userService = $userService;
+        $this->session = $session;
     }
 
     public function handle(Request $request): Response
     {
-        $token = $request->getAttribute('token');
-        $user = $this->userService->getUser($token->uid);
+        $user = $this->session->get('user');
 
-        return new JsonResponse(['user' => $user]);
+        return new JsonResponse($user);
     }
 }

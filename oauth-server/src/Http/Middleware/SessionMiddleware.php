@@ -21,14 +21,18 @@ class SessionMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $sessionIdHeader = $request->getHeader('Session-Id');
-        if ($sessionIdHeader) {
-            $this->session->setId($sessionIdHeader[0]);
+        if (isset($_COOKIE['PHPSESSID'])) {
+            $this->session->setId($_COOKIE['PHPSESSID']);
         }
+
         $this->session->start();
 
         $response = $handler->handle($request);
-        $response = $response->withHeader('Session-Id', $this->session->getId());
+
+        if (!isset($_COOKIE['PHPSESSID'])) {
+            $domain = sprintf('.%s', parse_url(getenv('APP_URL'), PHP_URL_HOST));
+            setcookie('PHPSESSID', $this->session->getId(), 0, '/', $domain);
+        }
 
         return $response;
     }

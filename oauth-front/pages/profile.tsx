@@ -39,6 +39,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'SET_USER',
             payload: user
         })
+
+        return {
+            props: {
+                user
+            }
+        }
     }
 )
 

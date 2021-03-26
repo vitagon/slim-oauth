@@ -1,10 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import { Nav, Navbar, Row, Col, Container, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Col, Container, Dropdown, DropdownButton, Nav, Navbar, Row } from 'react-bootstrap';
 import styles from './Default.module.scss';
-import Cookies from 'js-cookie';
 import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import types from '@/store/auth/types';
+import Http from '@/http';
 
 class DefaultLayout extends React.Component<any, any> {
 
@@ -32,8 +34,15 @@ class DefaultLayout extends React.Component<any, any> {
         this.setState({navExpanded: false});
     };
 
-    logout = () => {
-        Cookies.remove('X-Auth', {path: '/', domain: '.company.loc'});
+    logout = async () => {
+        try {
+            await Http.post('/api/logout');
+        } catch (e) {
+            console.error("Failed to logout user");
+            console.error(e);
+        }
+
+        this.props.removeUser();
         this.props.router.push('/');
     };
 
@@ -93,4 +102,8 @@ const mapStateToProps = (state) => ({
    user: state.AuthReducer.user
 });
 
-export default withRouter(connect(mapStateToProps)(DefaultLayout));
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+   removeUser: () => (dispatch) => dispatch({ type: types.SET_USER, payload: null })
+}, dispatch);
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DefaultLayout));

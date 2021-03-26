@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import Http from '@/http';
 import { withRouter } from 'next/router';
 import FullPage from '@/layouts/full-page/FullPage';
+import { getUser } from '@/services/AuthService';
 
 interface State {
     form: {
@@ -35,7 +36,7 @@ class Login extends React.Component<any, State> {
     login = async () => {
         let data = null;
         try {
-            let res = await Http.post('/login', this.state.form);
+            let res = await Http.post('/api/login', this.state.form);
             data = res.data;
         } catch (e) {
             console.error(e);
@@ -139,18 +140,9 @@ class Login extends React.Component<any, State> {
 }
 
 export async function getServerSideProps(ctx) {
-    let data = null;
-    console.log(ctx.req.headers);
-    try {
-        let res = await Http.get('/profile', {
-            headers: {cookie: ctx.req.headers.cookie}
-        });
-        data = res.data;
-    } catch (e) {
-        console.log(e);
-    }
+    let user = await getUser(ctx.req.headers.cookie);
 
-    if (data && data.user) {
+    if (user) {
         let {res} = ctx;
         res.setHeader('Location', '/profile');
         res.statusCode = 302;

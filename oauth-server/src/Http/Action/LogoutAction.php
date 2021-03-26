@@ -13,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class LoginAction implements RequestHandlerInterface
+class LogoutAction implements RequestHandlerInterface
 {
     private AuthService $authService;
     private SessionInterface $session;
@@ -26,17 +26,7 @@ class LoginAction implements RequestHandlerInterface
 
     public function handle(Request $request): Response
     {
-        $user = null;
-        try {
-            $user = $this->authService->getUser($request->getParsedBody());
-        } catch (Exception $e) {
-            throw new HttpException($request, $e->getMessage(), 500);
-        }
-
-        if (!$user) {
-            throw new HttpException($request, 'Invalid credentials', 401);
-        }
-        $this->session->set('user', $user);
+        $this->session->remove('user');
 
         return new JsonResponse();
     }

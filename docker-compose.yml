@@ -57,7 +57,7 @@ services:
     user: '1000:1000'
     environment:
       APP_DEBUG: 1
-      APP_FRONT_DOMAIN: 'http://company.loc'
+      APP_URL: 'http://company.loc'
       PHP_IDE_CONFIG: serverName=Docker
     depends_on:
       - mysql
@@ -112,7 +112,7 @@ services:
     tty: true
     environment:
       AUTH_SERVER_URL: 'http://backend_nginx'
-      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://auth.company.loc'
+      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://company.loc'
 
   frontend_node-cli:
     build:
