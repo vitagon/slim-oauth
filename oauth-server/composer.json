@@ -19,7 +19,9 @@
         "firebase/php-jwt": "^5.2",
         "nesbot/carbon": "^2.46",
         "doctrine/orm": "^2.8",
-        "monolog/monolog": "^2.2"
+        "monolog/monolog": "^2.2",
+        "doctrine/migrations": "^3.1",
+        "symfony/console": "^5.2"
     },
     "autoload": {
         "psr-4": {

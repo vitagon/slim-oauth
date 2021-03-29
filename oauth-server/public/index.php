@@ -3,6 +3,7 @@
 use Psr\Container\ContainerInterface;
 use Slim\App;
 
+
 http_response_code(500);
 
 require __DIR__ . '/../vendor/autoload.php';

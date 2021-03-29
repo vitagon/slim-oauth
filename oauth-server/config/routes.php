@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Action\AccessTokenAction;
 use App\Http\Action\AuthorizationAction;
 use App\Http\Action\ClientAction;
+use App\Http\Action\DbTestAction;
 use App\Http\Action\HomeAction;
 use App\Http\Action\JwtAction;
 use App\Http\Action\LoginAction;
@@ -27,6 +28,7 @@ return static function (App $app): void {
     $app->get('/api/profile', ProfileAction::class)->addMiddleware($webAuthMiddleware);
     $app->get('/client', ClientAction::class)
         ->addMiddleware($oAuthMiddleware);
+    $app->get('/api/dbtest', DbTestAction::class);
 
     $app->group('/oauth', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $app) {
         $group->post('/access_token', AccessTokenAction::class);
