@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Repository;
+namespace App\OAuth\Bridge\Repository;
 
-use App\OAuth\Model\RefreshTokenEntity;
+use App\OAuth\Bridge\Model\RefreshTokenEntity;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Repository;
+namespace App\OAuth\Bridge\Repository;
 
-use App\Model\UserEntity;
+use App\OAuth\Bridge\Model\UserEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 

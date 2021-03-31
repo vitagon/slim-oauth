@@ -35,35 +35,35 @@ return [
                     'dbname' => 'company',
                     'user' => 'root',
                     'password' => 'root',
-                    'charset' => 'utf8'
-                ]
-            ]
-        ]
+                    'charset' => 'utf8',
+                ],
+            ],
+        ],
     ],
     EntityManagerInterface::class => function (ContainerInterface $container) {
-    $config = Setup::createAnnotationMetadataConfiguration(
-        $container->get('config')['db']['doctrine']['metadata_dirs'],
-        $container->get('config')['db']['doctrine']['dev_mode']
-    );
+        $config = Setup::createAnnotationMetadataConfiguration(
+            $container->get('config')['db']['doctrine']['metadata_dirs'],
+            $container->get('config')['db']['doctrine']['dev_mode']
+        );
 
-    $config->setNamingStrategy(new UnderscoreNamingStrategy());
+        $config->setNamingStrategy(new UnderscoreNamingStrategy());
 
-    $config->setMetadataDriverImpl(
-        new AnnotationDriver(
-            new AnnotationReader(),
-            $container->get('config')['db']['doctrine']['metadata_dirs']
-        )
-    );
+        $config->setMetadataDriverImpl(
+            new AnnotationDriver(
+                new AnnotationReader(),
+                $container->get('config')['db']['doctrine']['metadata_dirs']
+            )
+        );
 
-    $config->setMetadataCacheImpl(
-        new FilesystemCache(
-            $container->get('config')['db']['doctrine']['cache_dir']
-        )
-    );
+        $config->setMetadataCacheImpl(
+            new FilesystemCache(
+                $container->get('config')['db']['doctrine']['cache_dir']
+            )
+        );
 
-    return EntityManager::create(
-        $container->get('config')['db']['doctrine']['connection'],
-        $config
-    );
-}
+        return EntityManager::create(
+            $container->get('config')['db']['doctrine']['connection'],
+            $config
+        );
+    },
 ];

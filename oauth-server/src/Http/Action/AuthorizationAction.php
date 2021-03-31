@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Http\Kernel\ViewResponse;
-use App\Model\UserEntity;
+use App\OAuth\Bridge\Model\UserEntity;
 use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -27,8 +27,8 @@ class AuthorizationAction
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        require __DIR__ . '/../../Views/authorize.php';
-        return new ViewResponse();
+//        require __DIR__ . '/../../Views/authorize.php';
+//        return new ViewResponse();
 
         try {
             // Validate the HTTP request and return an AuthorizationRequest object.
@@ -42,6 +42,7 @@ class AuthorizationAction
 
             // At this point you should redirect the user to an authorization page.
             // This form will ask the user to approve the client and the scopes requested.
+//            if ($authRequest->getClient()->)
 
             // Once the user has approved or denied the client update the status
             // (true = approved, false = denied)

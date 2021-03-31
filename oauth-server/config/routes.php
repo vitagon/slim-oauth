@@ -26,8 +26,7 @@ return static function (App $app): void {
     $app->post('/api/login', LoginAction::class);
     $app->post('/api/logout', LogoutAction::class);
     $app->get('/api/profile', ProfileAction::class)->addMiddleware($webAuthMiddleware);
-    $app->get('/client', ClientAction::class)
-        ->addMiddleware($oAuthMiddleware);
+    $app->get('/client', ClientAction::class)->addMiddleware($oAuthMiddleware);
     $app->get('/api/dbtest', DbTestAction::class);
 
     $app->group('/oauth', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $app) {

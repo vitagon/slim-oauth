@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Model;
+namespace App\OAuth\Bridge\Model;
 
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 

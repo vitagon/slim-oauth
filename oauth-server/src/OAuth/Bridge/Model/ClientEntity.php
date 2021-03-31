@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Model;
+namespace App\OAuth\Bridge\Model;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\Traits\ClientTrait;
@@ -24,7 +24,7 @@ class ClientEntity implements ClientEntityInterface
         string $identifier,
         string $name,
         $redirectUri,
-        bool $isConfidential
+        bool $isConfidential,
     ) {
         $this->identifier = $identifier;
         $this->name = $name;
