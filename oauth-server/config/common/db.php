@@ -26,7 +26,10 @@ return [
                 'cache_dir' => APP_ROOT . '/var/cache/doctrine',
 
                 // you should add any other path containing annotated entity classes
-                'metadata_dirs' => [APP_ROOT . '/src/Models'],
+                'metadata_dirs' => [
+                    APP_ROOT . '/src/Models',
+                    APP_ROOT . '/src/OAuth',
+                ],
 
                 'connection' => [
                     'driver' => 'pdo_mysql',
@@ -40,10 +43,11 @@ return [
             ],
         ],
     ],
+
     EntityManagerInterface::class => function (ContainerInterface $container) {
         $config = Setup::createAnnotationMetadataConfiguration(
             $container->get('config')['db']['doctrine']['metadata_dirs'],
-            $container->get('config')['db']['doctrine']['dev_mode']
+            $container->get('config')['db']['doctrine']['dev_mode'],
         );
 
         $config->setNamingStrategy(new UnderscoreNamingStrategy());

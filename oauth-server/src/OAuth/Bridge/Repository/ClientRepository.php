@@ -10,6 +10,8 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
 {
+    private ClientRepository $clientRepository;
+
     public function getClientEntity($clientIdentifier): ClientEntityInterface
     {
         return new ClientEntity(

@@ -42,7 +42,7 @@ class AuthorizationAction
 
             // At this point you should redirect the user to an authorization page.
             // This form will ask the user to approve the client and the scopes requested.
-//            if ($authRequest->getClient()->)
+            if ($authRequest->getClient())
 
             // Once the user has approved or denied the client update the status
             // (true = approved, false = denied)

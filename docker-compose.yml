@@ -56,6 +56,7 @@ services:
     image: ${COMPOSE_PROJECT_NAME}_php-fpm
     user: '1000:1000'
     environment:
+      APP_ENV: dev
       APP_DEBUG: 1
       APP_URL: 'http://company.loc'
       PHP_IDE_CONFIG: serverName=Docker
