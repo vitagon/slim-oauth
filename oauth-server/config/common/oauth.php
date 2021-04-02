@@ -1,11 +1,11 @@
 <?php
 
-use App\OAuth\Bridge\Repository\AccessTokenRepository;
-use App\OAuth\Bridge\Repository\AuthCodeRepository;
-use App\OAuth\Bridge\Repository\ClientRepository;
-use App\OAuth\Bridge\Repository\RefreshTokenRepository;
-use App\OAuth\Bridge\Repository\ScopeRepository;
-use App\OAuth\Bridge\Repository\UserRepository;
+use App\OAuth\Core\Repository\AccessTokenRepository;
+use App\OAuth\Core\Repository\AuthCodeRepository;
+use App\OAuth\Core\Repository\ClientRepository;
+use App\OAuth\Core\Repository\RefreshTokenRepository;
+use App\OAuth\Core\Repository\ScopeRepository;
+use App\OAuth\Core\Repository\UserRepository;
 use Defuse\Crypto\Key;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;

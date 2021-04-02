@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Bridge\Repository;
+namespace App\OAuth\Core\Repository;
 
-use App\OAuth\Bridge\Model\AccessTokenEntity;
+use App\OAuth\Core\Model\AccessTokenEntity;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;

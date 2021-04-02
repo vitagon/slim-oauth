@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Bridge\Model;
+namespace App\OAuth\Core\Model;
 
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;

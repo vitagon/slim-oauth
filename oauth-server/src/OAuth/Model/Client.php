@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth;
+namespace App\OAuth\Model;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -61,4 +61,14 @@ class Client
      * @ORM\Column
      */
     public DateTime $createdAt;
+
+    public function confidential(): bool
+    {
+        return !empty($this->secret);
+    }
+
+    public function skipsAuthorization(): bool
+    {
+        return $this->personalAccessClient || $this->passwordClient;
+    }
 }

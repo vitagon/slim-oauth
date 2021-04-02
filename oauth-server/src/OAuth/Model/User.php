@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\OAuth\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
