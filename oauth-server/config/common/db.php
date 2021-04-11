@@ -27,8 +27,7 @@ return [
 
                 // you should add any other path containing annotated entity classes
                 'metadata_dirs' => [
-                    APP_ROOT . '/src/Models',
-                    APP_ROOT . '/src/OAuth',
+                    SRC_ROOT . '/Model',
                 ],
 
                 'connection' => [

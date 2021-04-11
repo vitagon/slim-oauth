@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Model;
+namespace App\Model;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\Id;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="oauth_clients")
+ * @ORM\Table(name="clients")
  */
 class Client
 {
@@ -23,42 +23,42 @@ class Client
     public int $id;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(type="string")
      */
     public string $name;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(type="string")
      */
     public string $secret;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="string")
      */
     public string $redirect;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="boolean")
      */
     public bool $personalAccessClient;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="boolean")
      */
     public bool $passwordClient;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="boolean")
      */
     public bool $revoked;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="datetime")
      */
     public DateTime $updatedAt;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="datetime")
      */
     public DateTime $createdAt;
 

@@ -8,7 +8,7 @@ use App\Http\Action\ClientAction;
 use App\Http\Action\DbTestAction;
 use App\Http\Action\HomeAction;
 use App\Http\Action\JwtAction;
-use App\Http\Action\LoginAction;
+use App\Http\Action\LoginController;
 use App\Http\Action\LogoutAction;
 use App\Http\Action\Options\OptionsAction;
 use App\Http\Action\ProfileAction;
@@ -23,11 +23,15 @@ return static function (App $app): void {
     $oAuthMiddleware = new ResourceServerMiddleware($app->getContainer()->get(ResourceServer::class));
 
     $app->get('/', HomeAction::class);
-    $app->post('/api/login', LoginAction::class);
-    $app->post('/api/logout', LogoutAction::class);
-    $app->get('/api/profile', ProfileAction::class)->addMiddleware($webAuthMiddleware);
-    $app->get('/client', ClientAction::class)->addMiddleware($oAuthMiddleware);
-    $app->get('/api/dbtest', DbTestAction::class);
+    $app->get('/login', [LoginController::class, 'show']);
+
+    $app->group('/api', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $oAuthMiddleware) {
+//        $group->post('/login', [LoginController::class, 'login']);
+        $group->post('/logout', LogoutAction::class);
+        $group->get('/profile', ProfileAction::class)->addMiddleware($webAuthMiddleware);
+        $group->get('/client', ClientAction::class)->addMiddleware($oAuthMiddleware);
+        $group->get('/dbtest', DbTestAction::class);
+    });
 
     $app->group('/oauth', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $app) {
         $group->post('/access_token', AccessTokenAction::class);

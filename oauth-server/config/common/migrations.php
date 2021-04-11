@@ -13,7 +13,7 @@ return [
         $entityManager = $container->get(EntityManagerInterface::class);
 
         $configuration = new Doctrine\Migrations\Configuration\Configuration();
-        $configuration->addMigrationsDirectory('App\Migrations', __DIR__ . '/../../src/Migrations');
+        $configuration->addMigrationsDirectory('App\Migration', SRC_ROOT . '/Migration');
         $configuration->setAllOrNothing(true);
         $configuration->setCheckDatabasePlatform(false);
 

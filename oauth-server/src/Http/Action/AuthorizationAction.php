@@ -6,8 +6,8 @@ namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
 use App\Http\Kernel\ViewResponse;
-use App\OAuth\Core\Model\UserEntity;
-use App\OAuth\Repository\ClientRepository;
+use App\OAuth\Model\UserEntity;
+use App\Repository\ClientRepository;
 use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -46,7 +46,7 @@ class AuthorizationAction
             // This form will ask the user to approve the client and the scopes requested.
             $clientId = $authRequest->getClient()->getIdentifier();
             $client = $this->clientRepository->getById($clientId);
-            if ($client && !$client->skipsAuthorization()) {
+            if ($client && $client->skipsAuthorization()) {
                 return $this->approveRequest($authRequest);
             }
 

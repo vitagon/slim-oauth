@@ -4,19 +4,47 @@ declare(strict_types=1);
 
 namespace App\OAuth\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
+use App\OAuth\Model\AuthCodeEntity;
+use App\OAuth\Trait\FormatScopesForStorage;
+use JetBrains\PhpStorm\Pure;
+use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
+use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
-class AuthCodeRepository
+class AuthCodeRepository implements AuthCodeRepositoryInterface
 {
-    private EntityManagerInterface $em;
+    use FormatScopesForStorage;
 
-    public function __construct(EntityManagerInterface $em)
+
+    public function __construct()
     {
-        $this->em = $em;
+
     }
 
-    public function getById(): AuthCode
+    #[Pure]
+    public function getNewAuthCode(): AuthCodeEntityInterface
     {
+        return new AuthCodeEntity();
+    }
 
+    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity)
+    {
+        $attributes = [
+            'id' => $authCodeEntity->getIdentifier(),
+            'user_id' => $authCodeEntity->getUserIdentifier(),
+            'client_id' => $authCodeEntity->getClient()->getIdentifier(),
+            'scopes' => $this->formatScopesForStorage($authCodeEntity->getScopes()),
+            'revoked' => false,
+            'expires_at' => $authCodeEntity->getExpiryDateTime(),
+        ];
+    }
+
+    public function revokeAuthCode($codeId)
+    {
+        // TODO: Implement revokeAuthCode() method.
+    }
+
+    public function isAuthCodeRevoked($codeId)
+    {
+        return false; // The auth code has not been revoked
     }
 }

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\OAuth\Model;
+namespace App\Model;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\GeneratedValue;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping\Column;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="oauth_auth_codes")
+ * @ORM\Table(name="auth_codes")
  */
 class AuthCode
 {
@@ -34,6 +35,18 @@ class AuthCode
      */
     public User $user;
 
-
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
     public string $scopes;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    public bool $revoked;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    public DateTime $expiresAt;
 }

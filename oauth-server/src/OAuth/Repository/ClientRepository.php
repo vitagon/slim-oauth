@@ -4,49 +4,36 @@ declare(strict_types=1);
 
 namespace App\OAuth\Repository;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
-use JetBrains\PhpStorm\Pure;
-use App\OAuth\Model\Client;
+use App\OAuth\Model\ClientEntity;
+use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
+use App\Repository\ClientRepository as AppClientRepository;
 
-class ClientRepository
+class ClientRepository implements ClientRepositoryInterface
 {
-    private Connection $connection;
-    private EntityManagerInterface $em;
+    private AppClientRepository $appClientRepository;
 
-    #[Pure]
-    public function __construct(EntityManager $em)
+    public function __construct(AppClientRepository $appClientRepository)
     {
-        $this->em = $em;
-        $this->connection = $em->getConnection();
+        $this->appClientRepository = $appClientRepository;
     }
 
-//    public function getById(string $id): array
-//    {
-//        $query = $this->connection->createQueryBuilder();
-//
-//        return $query
-//            ->select('c')
-//            ->from('oauth_clients', 'c')
-//            ->where('c.id = :id')
-//            ->setParameter('id', $id)
-//            ->fetchAllAssociative();
-//    }
-
-    /**
-     * @param string $id
-     * @return Client|null
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
-    public function getById(string $id): ?Client
+    public function getClientEntity($clientIdentifier): ?ClientEntityInterface
     {
-        $query = $this->em->createQuery('select c from Client where id = :id');
-        $query->setParameter('id', $id);
+        $client = $this->appClientRepository->getById($clientIdentifier);
 
-        return $query->getSingleResult();
+        if (!$client) return null;
+
+        return new ClientEntity(
+            (string)$client->id,
+            $client->name,
+            $client->redirect,
+            $client->confidential()
+        );
+    }
+
+    public function validateClient($clientIdentifier, $clientSecret, $grantType)
+    {
+        return true;
     }
 }

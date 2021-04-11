@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-use App\OAuth\Core\Model\ScopeEntity;
+namespace App\OAuth\Trait;
+
+use App\OAuth\Model\ScopeEntity;
 
 trait FormatScopesForStorage
 {
     /**
      * FormatScopesForStorage constructor.
      * @param ScopeEntity[] $scopes
+     * @return string
      */
     public function formatScopesForStorage(array $scopes): string
     {

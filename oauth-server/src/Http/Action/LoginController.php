@@ -11,20 +11,28 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpException;
+use Slim\Views\Twig;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class LoginAction implements RequestHandlerInterface
+class LoginController
 {
     private AuthService $authService;
     private SessionInterface $session;
+    private Twig $view;
 
-    public function __construct(AuthService $authService, SessionInterface $session)
+    public function __construct(AuthService $authService, SessionInterface $session, Twig $view)
     {
         $this->authService = $authService;
         $this->session = $session;
+        $this->view = $view;
     }
 
-    public function handle(Request $request): Response
+    public function show(Response $response): Response
+    {
+        return $this->view->render($response, 'login.html.twig');
+    }
+
+    public function login(Request $request): Response
     {
         $user = null;
         try {

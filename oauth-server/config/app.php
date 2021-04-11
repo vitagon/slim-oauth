@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Psr\Container\ContainerInterface;
 use Slim\App;
-use Slim\Factory\AppFactory;
+use DI\Bridge\Slim\Bridge as AppFactory;
 
 return static function (ContainerInterface $container): App {
-    $app = AppFactory::createFromContainer($container);
+    $app = AppFactory::create($container);
     (require __DIR__ . '/middleware.php')($app, $container);
     (require __DIR__ . '/routes.php')($app);
     return $app;

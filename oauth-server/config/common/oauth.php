@@ -1,11 +1,11 @@
 <?php
 
-use App\OAuth\Core\Repository\AccessTokenRepository;
-use App\OAuth\Core\Repository\AuthCodeRepository;
-use App\OAuth\Core\Repository\ClientRepository;
-use App\OAuth\Core\Repository\RefreshTokenRepository;
-use App\OAuth\Core\Repository\ScopeRepository;
-use App\OAuth\Core\Repository\UserRepository;
+use App\OAuth\Repository\AccessTokenRepository;
+use App\OAuth\Repository\AuthCodeRepository;
+use App\OAuth\Repository\ClientRepository;
+use App\OAuth\Repository\RefreshTokenRepository;
+use App\OAuth\Repository\ScopeRepository;
+use App\OAuth\Repository\UserRepository;
 use Defuse\Crypto\Key;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -27,13 +27,13 @@ return [
             'private_key_path' => sprintf(
                 '%s%s',
                 'file://',
-                realpath(__DIR__ . '/../../storage/keys/oauth/private.key')
+                realpath(APP_ROOT . '/storage/keys/oauth/private.key')
             ),
 
             'public_key_path' => sprintf(
                 '%s%s',
                 'file://',
-                realpath(__DIR__ . '/../../storage/keys/oauth/public.key')
+                realpath(APP_ROOT . '/storage/keys/oauth/public.key')
             ),
 
             // this key should be moved out of git
