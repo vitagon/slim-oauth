@@ -8,12 +8,25 @@ use App\OAuth\Model\ScopeEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
+use App\Repository\ScopeRepository as AppScopeRepository;
 
 class ScopeRepository implements ScopeRepositoryInterface
 {
-    public function getScopeEntityByIdentifier($identifier): ?ScopeEntityInterface
+    private AppScopeRepository $appScopeRepository;
+
+    public function __construct(AppScopeRepository $appScopeRepository)
     {
-        return new ScopeEntity();
+        $this->appScopeRepository = $appScopeRepository;
+    }
+
+    public function getScopeEntityByIdentifier($identifier)
+    {
+        $scope = $this->appScopeRepository->getByName((string)$identifier);
+        if (!$scope) {
+            return null;
+        }
+
+        return new ScopeEntity($scope);
     }
 
     public function finalizeScopes(

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
+use App\Http\Security\SecurityContext;
 use App\Service\AuthService;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -14,7 +15,7 @@ use Slim\Exception\HttpException;
 use Slim\Views\Twig;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class LoginController
+class LoginController extends BaseController
 {
     private AuthService $authService;
     private SessionInterface $session;
@@ -27,12 +28,16 @@ class LoginController
         $this->view = $view;
     }
 
-    public function show(Response $response): Response
+    public function show(Response $response, SecurityContext $securityContext): Response
     {
+        if ($securityContext->getUser()) {
+            return $this->redirect('/');
+        }
+
         return $this->view->render($response, 'login.html.twig');
     }
 
-    public function login(Request $request): Response
+    public function login(Request $request, Response $response): Response
     {
         $user = null;
         try {
@@ -46,6 +51,6 @@ class LoginController
         }
         $this->session->set('user', $user);
 
-        return new JsonResponse();
+        return $this->redirect('/');
     }
 }

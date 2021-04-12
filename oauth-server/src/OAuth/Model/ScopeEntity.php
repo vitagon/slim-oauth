@@ -4,17 +4,25 @@ declare(strict_types=1);
 
 namespace App\OAuth\Model;
 
+use App\Model\Scope;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
+use League\OAuth2\Server\Entities\Traits\EntityTrait;
 
 class ScopeEntity implements ScopeEntityInterface
 {
-    public function getIdentifier()
+    use EntityTrait;
+
+    private string $name;
+    private string $description;
+
+    public function __construct(Scope $scope)
     {
-        return 212;
+        $this->setIdentifier($scope->id);
+        $this->name = $scope->name;
     }
 
     public function jsonSerialize()
     {
-        return 'read';
+        return $this->name;
     }
 }
