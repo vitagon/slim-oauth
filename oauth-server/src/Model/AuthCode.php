@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\GeneratedValue;
@@ -18,10 +19,9 @@ class AuthCode
 {
     /**
      * @Id()
-     * @GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
-    public int $id;
+    public string $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Client")
@@ -46,7 +46,20 @@ class AuthCode
     public bool $revoked;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    public DateTime $expiresAt;
+    public ?DateTimeImmutable $expiresAt;
+
+    public static function create(string $id, Client $client, User $user, string $scopes, ?DateTimeImmutable $expiresAt): self
+    {
+        $authCode = new self();
+        $authCode->id = $id;
+        $authCode->client = $client;
+        $authCode->user = $user;
+        $authCode->scopes = $scopes;
+        $authCode->revoked = false;
+        $authCode->expiresAt = $expiresAt;
+
+        return $authCode;
+    }
 }

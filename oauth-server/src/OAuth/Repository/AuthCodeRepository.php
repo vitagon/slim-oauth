@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\OAuth\Repository;
 
+use App\OAuth\Dto\AuthCodeDto;
 use App\OAuth\Model\AuthCodeEntity;
 use App\OAuth\Trait\FormatScopesForStorage;
-use JetBrains\PhpStorm\Pure;
+use App\Repository\AuthCodeRepository as AuthCodeModelRepository;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -14,19 +15,19 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
 {
     use FormatScopesForStorage;
 
+    private AuthCodeModelRepository $authCodes;
 
-    public function __construct()
+    public function __construct(AuthCodeModelRepository $authCodes)
     {
-
+        $this->authCodes = $authCodes;
     }
 
-    #[Pure]
     public function getNewAuthCode(): AuthCodeEntityInterface
     {
         return new AuthCodeEntity();
     }
 
-    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity)
+    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
     {
         $attributes = [
             'id' => $authCodeEntity->getIdentifier(),
@@ -36,15 +37,27 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
             'revoked' => false,
             'expires_at' => $authCodeEntity->getExpiryDateTime(),
         ];
+
+        $dto = AuthCodeDto::create(
+            $attributes['id'],
+            (int)$attributes['client_id'],
+            (int)$attributes['user_id'],
+            $attributes['scopes'],
+            $attributes['expires_at']
+        );
+        $this->authCodes->save($dto);
     }
 
-    public function revokeAuthCode($codeId)
+    public function revokeAuthCode($code)
     {
-        // TODO: Implement revokeAuthCode() method.
+        $authCode = $this->authCodes->getById($code);
+        $authCode->revoked = true;
+        $this->authCodes->update($authCode);
     }
 
-    public function isAuthCodeRevoked($codeId)
+    public function isAuthCodeRevoked($codeId): bool
     {
-        return false; // The auth code has not been revoked
+        $authCode = $this->authCodes->getById($codeId);
+        return $authCode->revoked;
     }
 }

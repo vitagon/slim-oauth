@@ -6,9 +6,12 @@ namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
 use App\Http\Kernel\ViewResponse;
+use App\Http\Security\SecurityContext;
 use App\OAuth\Model\UserEntity;
+use App\OAuth\Repository\ScopeRepository as ScopeRepositoryAlias;
 use App\Repository\ClientRepository;
 use App\Repository\ScopeRepository;
+use App\Repository\UserRepository;
 use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -23,22 +26,22 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class AuthorizationController
 {
     private AuthorizationServer $server;
-    private ResourceServer $resourceServer;
     private ClientRepository $clientRepository;
     private ScopeRepository $scopeRepository;
     private SessionInterface $session;
     private Twig $twig;
+    private SecurityContext $securityContext;
 
     public function __construct(
         AuthorizationServer $server,
-        ResourceServer $resourceServer,
+        SecurityContext $securityContext,
         ClientRepository $clientRepository,
         ScopeRepository $scopeRepository,
         Twig $twig,
         SessionInterface $session
     ) {
         $this->server = $server;
-        $this->resourceServer = $resourceServer;
+        $this->securityContext = $securityContext;
         $this->clientRepository = $clientRepository;
         $this->scopeRepository = $scopeRepository;
         $this->twig = $twig;
@@ -51,8 +54,9 @@ class AuthorizationController
             // Validate the HTTP request and return an AuthorizationRequest object.
             $authRequest = $this->server->validateAuthorizationRequest($request);
 
+            $userId = $this->securityContext->getUser()['id'];
             // Once the user has logged in set the user on the AuthorizationRequest
-            $authRequest->setUser(new UserEntity()); // an instance of UserEntityInterface
+            $authRequest->setUser(new UserEntity($userId)); // an instance of UserEntityInterface
             
             $scopes = $this->parseScopes($authRequest);
 
@@ -74,8 +78,7 @@ class AuthorizationController
                 'scopes' => $scopes,
             ]);
         } catch (OAuthServerException $exception) {
-            // All instances of OAuthServerException can be formatted into a HTTP response
-            return $exception->generateHttpResponse($response);
+            return new JsonResponse($exception->getPayload());
         } catch (Exception $exception) {
             // Unknown exception
             $body = new Stream(fopen('php://temp', 'r+'));
@@ -101,7 +104,7 @@ class AuthorizationController
         $scopesArr = [];
         if (count($scopes)) {
             foreach ($scopes as $scope) {
-                $scope = $this->scopeRepository->getById((int)$scope->getIdentifier());
+                $scope = ScopeRepositoryAlias::getById((int)$scope->getIdentifier(), $this->scopeRepository);
                 $scopesArr[] = $scope->description;
             }
         }

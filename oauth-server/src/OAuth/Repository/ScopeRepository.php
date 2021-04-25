@@ -5,23 +5,22 @@ declare(strict_types=1);
 namespace App\OAuth\Repository;
 
 use App\OAuth\Model\ScopeEntity;
+use App\Repository\ScopeRepository as ScopeModelRepository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
-use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
-use App\Repository\ScopeRepository as AppScopeRepository;
 
 class ScopeRepository implements ScopeRepositoryInterface
 {
-    private AppScopeRepository $appScopeRepository;
+    private ScopeModelRepository $scopes;
 
-    public function __construct(AppScopeRepository $appScopeRepository)
+    public function __construct(ScopeModelRepository $scopes)
     {
-        $this->appScopeRepository = $appScopeRepository;
+        $this->scopes = $scopes;
     }
 
     public function getScopeEntityByIdentifier($identifier)
     {
-        $scope = $this->appScopeRepository->getByName((string)$identifier);
+        $scope = $this->scopes->getByName((string)$identifier);
         if (!$scope) {
             return null;
         }

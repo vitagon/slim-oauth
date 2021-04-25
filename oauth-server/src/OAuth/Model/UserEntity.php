@@ -8,8 +8,15 @@ use League\OAuth2\Server\Entities\UserEntityInterface;
 
 class UserEntity implements UserEntityInterface
 {
-    public function getIdentifier()
+    private int $id;
+
+    public function __construct(int $id)
     {
-        return 455;
+        $this->id = $id;
+    }
+
+    public function getIdentifier(): int
+    {
+        return $this->id;
     }
 }

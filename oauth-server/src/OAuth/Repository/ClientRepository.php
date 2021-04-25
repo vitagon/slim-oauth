@@ -5,24 +5,25 @@ declare(strict_types=1);
 namespace App\OAuth\Repository;
 
 use App\OAuth\Model\ClientEntity;
+use App\Repository\ClientRepository as ClientModelRepository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
-use App\Repository\ClientRepository as AppClientRepository;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-    private AppClientRepository $appClientRepository;
+    private ClientModelRepository $clients;
 
-    public function __construct(AppClientRepository $appClientRepository)
+    public function __construct(ClientModelRepository $clients)
     {
-        $this->appClientRepository = $appClientRepository;
+        $this->clients = $clients;
     }
 
     public function getClientEntity($clientIdentifier): ?ClientEntityInterface
     {
-        $client = $this->appClientRepository->getById($clientIdentifier);
-
-        if (!$client) return null;
+        $client = $this->clients->getById($clientIdentifier);
+        if (!$client) {
+            return null;
+        }
 
         return new ClientEntity(
             (string)$client->id,
@@ -32,8 +33,17 @@ class ClientRepository implements ClientRepositoryInterface
         );
     }
 
-    public function validateClient($clientIdentifier, $clientSecret, $grantType)
+    public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
     {
+        $client = $this->clients->getById($clientIdentifier);
+        if (!$client || $client->revoked) {
+            return false;
+        }
+
+        if ($client->secret !== $clientSecret) {
+            return false;
+        }
+
         return true;
     }
 }

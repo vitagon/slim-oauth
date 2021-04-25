@@ -15,6 +15,7 @@ class User implements JsonSerializable
 {
     /**
      * @ORM\Id()
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private int $id;
@@ -22,12 +23,17 @@ class User implements JsonSerializable
     /**
      * @ORM\Column
      */
-    private string $name;
+    private string $firstname;
+
+    /**
+     * @ORM\Column
+     */
+    private string $lastname;
 
     /**
      * @ORM\Column(unique=true)
      */
-    private string $login;
+    private string $email;
 
     /**
      * @ORM\Column
@@ -44,24 +50,34 @@ class User implements JsonSerializable
         $this->id = $id;
     }
 
-    public function getName(): string
+    public function getFirstname(): string
     {
-        return $this->name;
+        return $this->firstname;
     }
 
-    public function setName(string $name): void
+    public function setFirstname(string $firstname): void
     {
-        $this->name = $name;
+        $this->firstname = $firstname;
     }
 
-    public function getLogin(): string
+    public function getLastname(): string
     {
-        return $this->login;
+        return $this->lastname;
     }
 
-    public function setLogin(string $login): void
+    public function setLastname(string $lastname): void
     {
-        $this->login = $login;
+        $this->lastname = $lastname;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
     public function getPassword(): string
@@ -78,8 +94,9 @@ class User implements JsonSerializable
     {
         return [
             'id' => $this->getId(),
-            'name' => $this->getName(),
-            'login' => $this->getLogin()
+            'firstname' => $this->getFirstname(),
+            'lastname' => $this->getLastname(),
+            'email' => $this->getEmail(),
         ];
     }
 }

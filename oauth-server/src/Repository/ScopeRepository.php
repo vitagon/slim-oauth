@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Model\Scope;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 
 class ScopeRepository
 {
@@ -45,7 +44,7 @@ class ScopeRepository
         $query = $this->em->createQueryBuilder()
             ->select('s')
             ->from(Scope::class, 's')
-            ->where("s.name = :name")
+            ->where('s.name = :name')
             ->setParameter('name', $name)
             ->getQuery();
 

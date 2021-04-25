@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Action;
 
-use App\Model\User;
-use App\OAuth\Model\UserEntity;
 use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use Psr\Http\Message\ResponseInterface;

@@ -51,6 +51,11 @@ class LoginController extends BaseController
         }
         $this->session->set('user', $user);
 
+        if ($lastUrl = $this->session->get('auth.last_url')) {
+            $this->session->remove('auth.last_url');
+            return $this->redirect(sprintf('%s?%s', $lastUrl->getPath(), $lastUrl->getQuery()));
+        }
+
         return $this->redirect('/');
     }
 }
