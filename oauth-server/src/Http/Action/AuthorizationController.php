@@ -5,18 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
-use App\Http\Kernel\ViewResponse;
 use App\Http\Security\SecurityContext;
 use App\OAuth\Model\UserEntity;
-use App\OAuth\Repository\ScopeRepository as ScopeRepositoryAlias;
 use App\Repository\ClientRepository;
 use App\Repository\ScopeRepository;
-use App\Repository\UserRepository;
 use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
-use League\OAuth2\Server\ResourceServer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Stream;
@@ -104,7 +100,7 @@ class AuthorizationController
         $scopesArr = [];
         if (count($scopes)) {
             foreach ($scopes as $scope) {
-                $scope = ScopeRepositoryAlias::getById((int)$scope->getIdentifier(), $this->scopeRepository);
+                $scope = $this->scopeRepository->getById((int)$scope->getIdentifier());
                 $scopesArr[] = $scope->description;
             }
         }
