@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Model\User;
 use Carbon\Carbon;
 use Exception;
 use Firebase\JWT\JWT;
@@ -19,14 +20,14 @@ class AuthService
         $this->jwtSecret = $jwtSecret;
     }
 
-    public function getUser(array $credentials): ?array
+    public function getUser(array $credentials): ?User
     {
         if (!isset($credentials['login']) || !isset($credentials['password'])) {
             throw new Exception('Login or password not found in credentials');
         }
 
-        $user = $this->userService->getUserByEmail($credentials['login']);
-        if (!$user || !password_verify($credentials['password'], $user['password'])) {
+        $user = $this->userService->getByEmail($credentials['login']);
+        if (!$user || !password_verify($credentials['password'], $user->getPassword())) {
             return null;
         }
 

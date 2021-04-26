@@ -27,7 +27,7 @@ class ApproveAuthorizationController
         $this->assertValidAuthToken($request, $this->session);
 
         $authRequest = $this->session->get('authRequest');
-        if (! $authRequest) {
+        if (!$authRequest) {
             throw new Exception('Authorization request was not present in the session.');
         }
 
@@ -35,14 +35,14 @@ class ApproveAuthorizationController
         return $this->server->completeAuthorizationRequest($authRequest, $response);
     }
 
-    private function assertValidAuthToken(Request $request, SessionInterface $session)
+    private function assertValidAuthToken(ServerRequestInterface $request, SessionInterface $session)
     {
         $reqParams = $request->getParsedBody();
-        if (isset($reqParams['auth_token']) && $session->get('authToken') !== $reqParams['auth_token']) {
-            $session->remove('authToken');
+        if (isset($reqParams['csrf_token']) && $session->get('csrfToken') !== $reqParams['csrf_token']) {
+            $session->remove('csrfToken');
             $session->remove('authRequest');
 
-            throw new \Exception("Invalid auth token");
+            throw new Exception("Invalid csrf token");
         }
     }
 }

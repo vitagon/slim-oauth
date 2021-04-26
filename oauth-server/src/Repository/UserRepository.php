@@ -30,7 +30,7 @@ class UserRepository
      * @return Client|null
      * @throws NonUniqueResultException
      */
-    public function getById(string $id): ?User
+    public function getById(int $id): ?User
     {
         $query = $this->em->createQueryBuilder()
             ->select('u')

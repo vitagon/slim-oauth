@@ -40,7 +40,7 @@
                 <div>
                     <form action="/oauth/authorize" method="post">
                         <input type="hidden" name="client_id" value="{{ client_id }}"/>
-                        <input type="hidden" name="auth_code" value="{{ auth_code }}"/>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                         <button type="submit" class="btn btn-success">Allow</button>
                     </form>
                 </div>
@@ -48,7 +48,7 @@
                 <div>
                     <form action="/oauth/authorize/deny" method="post">
                         <input type="hidden" name="client_id" value="{{ client_id }}"/>
-                        <input type="hidden" name="auth_code" value="{{ auth_code }}"/>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                         <button type="submit" class="btn btn-danger ms-3">Block</button>
                     </form>
                 </div>

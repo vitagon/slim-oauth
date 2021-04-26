@@ -50,7 +50,7 @@ class AuthorizationController
             // Validate the HTTP request and return an AuthorizationRequest object.
             $authRequest = $this->server->validateAuthorizationRequest($request);
 
-            $userId = $this->securityContext->getUser()['id'];
+            $userId = $this->securityContext->getUser()->getId();
             // Once the user has logged in set the user on the AuthorizationRequest
             $authRequest->setUser(new UserEntity($userId)); // an instance of UserEntityInterface
             
@@ -64,13 +64,13 @@ class AuthorizationController
                 return $this->approveRequest($authRequest, $response);
             }
 
-            $authCode = bin2hex(random_bytes(30));
+            $csrfToken = bin2hex(random_bytes(30));
             $this->session->set('authRequest', $authRequest);
-            $this->session->set('authCode', $authCode);
+            $this->session->set('csrfToken', $csrfToken);
 
             return $this->twig->render($response, 'authorize.html.twig', [
                 'client_id' => $clientId,
-                'auth_code' => $authCode,
+                'csrf_token' => $csrfToken,
                 'scopes' => $scopes,
             ]);
         } catch (OAuthServerException $exception) {

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\OAuth\Trait;
 
-use App\OAuth\Model\ScopeEntity;
+use League\OAuth2\Server\Entities\ScopeEntityInterface;
 
 trait FormatScopesForStorage
 {
     /**
-     * FormatScopesForStorage constructor.
-     * @param ScopeEntity[] $scopes
+     * @param ScopeEntityInterface[] $scopes
      * @return string
      */
     public function formatScopesForStorage(array $scopes): string
@@ -19,7 +18,7 @@ trait FormatScopesForStorage
     }
 
     /**
-     * @param ScopeEntity[] $scopes
+     * @param ScopeEntityInterface[] $scopes
      * @return array
      */
     public function scopesToArray(array $scopes): array

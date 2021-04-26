@@ -4,34 +4,25 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use JetBrains\PhpStorm\Pure;
+use App\Model\User;
+use App\Repository\UserRepository;
 
 class UserService
 {
-    private array $users = [];
+    private UserRepository $userRepository;
 
-    public function __construct()
+    public function __construct(UserRepository $userRepository)
     {
-        $this->users = [
-            [
-                'id' => 1,
-                'name' => 'Vitalii Goncharov',
-                'email' => 'www.devvit@gmail.com',
-                'password' => '$2y$10$cpsmp08CpKYcRurujGxgjOwDMxJcrmNknlNNlf0oameSJ3Vnqk/d.'
-            ]
-        ];
+        $this->userRepository = $userRepository;
     }
 
-    #[Pure]
-    public function getUser(int $id): ?array
+    public function getByEmail(string $email): ?User
     {
-        $userKey = array_search($id, array_column($this->users, 'id'));
-        return $userKey !== false ? $this->users[$userKey] : null;
+        return $this->userRepository->getByEmail($email);
     }
 
-    public function getUserByEmail(string $email): ?array
+    public function getById(int $id): ?User
     {
-        $userKey = array_search($email, array_column($this->users, 'email'));
-        return $userKey !== false ? $this->users[$userKey] : null;
+        return $this->userRepository->getById($id);
     }
 }
