@@ -1,125 +1,120 @@
 import React from 'react';
 import NProgress from 'nprogress';
-import Router from "next/router";
-import PropTypes from 'prop-types';
+import Router from 'next/router';
 
 class NextNProgress extends React.Component<any, any> {
-  static defaultProps = {
-    color: '#29D',
-    startPosition: 0.3,
-    stopDelayMs: 200,
-    height: 3,
-  };
 
-  timer = null;
+    static defaultProps = {
+        color: '#29D',
+        startPosition: 0.3,
+        stopDelayMs: 200,
+        height: 3,
+    };
 
-  routeChangeStart = () => {
-    NProgress.set(this.props.startPosition);
-    NProgress.start();
-  };
+    timer = null;
 
-  routeChangeEnd = () => {
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      NProgress.done(true);
-    }, this.props.stopDelayMs);
-  };
+    routeChangeStart = () => {
+        NProgress.set(this.props.startPosition);
+        NProgress.start();
+    };
 
-  render() {
-    const { color, height } = this.props;
+    routeChangeEnd = () => {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            NProgress.done(true);
+        }, this.props.stopDelayMs);
+    };
 
-    return (
-      <style jsx global>{`
-        #nprogress {
-          pointer-events: none;
-          position: absolute;
-          top: 56px;
-          width: 100%;
-        }
-        #nprogress .bar {
-          background: ${color};
-          position: absolute;
-          z-index: 1031;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: ${height}px;
-        }
-        #nprogress .peg {
-          display: block;
-          position: absolute;
-          right: 0px;
-          width: 100%;
-          height: 100%;
-          box-shadow: 0 0 10px ${color}, 0 0 5px ${color};
-          opacity: 1;
-          // -webkit-transform: rotate(3deg) translate(0px, -4px);
-          // -ms-transform: rotate(3deg) translate(0px, -4px);
-          // transform: rotate(3deg) translate(0px, -4px);
-        }
-        #nprogress .spinner {
-          display: "block";
-          position: absolute;
-          z-index: 1031;
-          top: 15px;
-          right: 15px;
-        }
-        #nprogress .spinner-icon {
-          width: 18px;
-          height: 18px;
-          box-sizing: border-box;
-          border: solid 2px transparent;
-          border-top-color: ${color};
-          border-left-color: ${color};
-          border-radius: 50%;
-          -webkit-animation: nprogresss-spinner 400ms linear infinite;
-          animation: nprogress-spinner 400ms linear infinite;
-        }
-        .nprogress-custom-parent {
-          overflow: hidden;
-          position: relative;
-        }
-        .nprogress-custom-parent #nprogress .spinner,
-        .nprogress-custom-parent #nprogress .bar {
-          position: absolute;
-        }
-        @-webkit-keyframes nprogress-spinner {
-          0% {
-            -webkit-transform: rotate(0deg);
-          }
-          100% {
-            -webkit-transform: rotate(360deg);
-          }
-        }
-        @keyframes nprogress-spinner {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>);
-  }
+    render() {
+        const { color, height } = this.props;
 
-  componentDidMount() {
-    const { options } = this.props;
-
-    if (options) {
-      NProgress.configure(options);
+        return (
+            <style jsx global>{`
+                #nprogress {
+                  pointer-events: none;
+                  position: absolute;
+                  top: 0;
+                  width: 100%;
+                }
+                #nprogress .bar {
+                  background: ${color};
+                  position: absolute;
+                  z-index: 1031;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: ${height}px;
+                }
+                #nprogress .peg {
+                  display: block;
+                  position: absolute;
+                  right: 0px;
+                  width: 100%;
+                  height: 100%;
+                  box-shadow: 0 0 10px ${color}, 0 0 5px ${color};
+                  opacity: 1;
+                  // -webkit-transform: rotate(3deg) translate(0px, -4px);
+                  // -ms-transform: rotate(3deg) translate(0px, -4px);
+                  // transform: rotate(3deg) translate(0px, -4px);
+                }
+                #nprogress .spinner {
+                  // change to block if want to show spinner
+                  display: none;
+                  position: absolute;
+                  z-index: 1031;
+                  top: 15px;
+                  right: 15px;
+                }
+                #nprogress .spinner-icon {
+                  width: 18px;
+                  height: 18px;
+                  box-sizing: border-box;
+                  border: solid 2px transparent;
+                  border-top-color: ${color};
+                  border-left-color: ${color};
+                  border-radius: 50%;
+                  -webkit-animation: nprogresss-spinner 400ms linear infinite;
+                  animation: nprogress-spinner 400ms linear infinite;
+                }
+                .nprogress-custom-parent {
+                  overflow: hidden;
+                  position: relative;
+                }
+                .nprogress-custom-parent #nprogress .spinner,
+                .nprogress-custom-parent #nprogress .bar {
+                  position: absolute;
+                }
+                @-webkit-keyframes nprogress-spinner {
+                  0% {
+                    -webkit-transform: rotate(0deg);
+                  }
+                  100% {
+                    -webkit-transform: rotate(360deg);
+                  }
+                }
+                @keyframes nprogress-spinner {
+                  0% {
+                    transform: rotate(0deg);
+                  }
+                  100% {
+                    transform: rotate(360deg);
+                  }
+                }
+            `}</style>
+        );
     }
 
-    Router.events.on('routeChangeStart', this.routeChangeStart);
-    Router.events.on('routeChangeComplete', this.routeChangeEnd);
-    Router.events.on('routeChangeError', this.routeChangeEnd);
-  }
-}
+    componentDidMount() {
+        const { options } = this.props;
 
-// NextNProgress.propTypes = {
-//   color: PropTypes.string,
-//   startPosition: PropTypes.number,
-//   stopDelayMs: PropTypes.number,
-//   options: PropTypes.object,
-// };
+        if (options) {
+            NProgress.configure(options);
+        }
+
+        Router.events.on('routeChangeStart', this.routeChangeStart);
+        Router.events.on('routeChangeComplete', this.routeChangeEnd);
+        Router.events.on('routeChangeError', this.routeChangeEnd);
+    }
+}
 
 export default NextNProgress;

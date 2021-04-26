@@ -112,7 +112,7 @@ services:
     tty: true
     environment:
       AUTH_SERVER_URL: 'http://backend_nginx'
-      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://auth.company.loc'
+      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://company.loc'
 
   client_node-cli:
     build:

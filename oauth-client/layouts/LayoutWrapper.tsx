@@ -8,7 +8,7 @@ const layouts = {
 
 const LayoutWrapper = (props) => {
   // to get the text value of the assigned layout of each component
-  const Layout = layouts[props.children[1].type.layout];
+  const Layout = layouts[props.layout];
 
   // if we have a registered layout render children with said layout
   if (Layout != null) {
