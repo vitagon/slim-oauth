@@ -7,7 +7,6 @@ class Home extends React.Component<any, any> {
     this.state = {
       user: null
     }
-
   }
 
   async componentDidMount() {

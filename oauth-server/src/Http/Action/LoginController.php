@@ -37,7 +37,6 @@ class LoginController extends BaseController
 
     public function login(Request $request, Response $response): Response
     {
-        $user = null;
         try {
             $user = $this->authService->getUser($request->getParsedBody());
         } catch (Exception $e) {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\WebAuthMiddleware;
+use App\Http\Security\SecurityContext;
 use App\Service\AuthService;
 use App\Service\UserService;
 use Psr\Container\ContainerInterface;
@@ -16,7 +17,8 @@ return [
 
     WebAuthMiddleware::class => function (ContainerInterface $container) {
         $session = $container->get(SessionInterface::class);
-        return new WebAuthMiddleware($session);
+        $securityContext = $container->get(SecurityContext::class);
+        return new WebAuthMiddleware($session, $securityContext);
     },
     JwtAuthentication::class => function (ContainerInterface $container) {
         return new JwtAuthentication($container, [

@@ -16,10 +16,11 @@
                         Info
                     </div>
                     <div class="card-body">
-                        <p class="card-text">Hello, {{ user ? user.name : 'guest' }}!</p>
                         {% if user %}
+                            <p class="card-text">Hello, {{ user.firstname }} {{ user.lastname }}!</p>
                             <a href="/logout" class="btn btn-primary">Logout</a>
                         {% else %}
+                            <p class="card-text">Hello, guest!</p>
                             <a href="/login" class="btn btn-primary">Login</a>
                         {% endif %}
                     </div>
