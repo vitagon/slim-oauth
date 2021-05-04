@@ -1,4 +1,5 @@
-import Http from '@/http';
+import authHttp from '@/http/authHttp';
+import Cookies from 'cookies';
 
 export default async (req, res) => {
     let removeToken = false;
@@ -9,33 +10,34 @@ export default async (req, res) => {
 
     let data = null;
     try {
-        res = await Http.get('/auth/user', {
+        let tokenResponse = await authHttp.post('/oauth/access_token', {
+            grant_type: 'authorization_code',
+            client_id: process.env.NEXT_CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
+            redirect_uri: process.env.NEXT_REDIRECT_URI,
+            code: req.body.code,
+        }, {
             headers: {
-                'Cookie': cookie
+                cookie: req.headers.cookie
             }
         });
-        data = res.data;
+        data = tokenResponse.data;
     } catch (e) {
-        res.status(500).json(e);
+        res.status(e.response.status);
+        if (e.response && e.response.data) {
+            return res.json(e.response.data);
+        } else {
+            return res.json(e);
+        }
     }
 
-    res.status(200).json(data);
+    let unixNow = Math.floor(Date.now() / 1000);
 
-    try {
-        let res = await fetch('http://company.loc/user/self', {
-            headers: {
-                'Accept': 'application/json',
-                'Cookie': ''
-            },
-            credentials: 'include',
-        });
-        data = await res.text();
+    const cookies = new Cookies(req, res);
+    cookies.set('access_token', data.access_token);
+    cookies.set('refresh_token', data.access_token);
+    cookies.set('expiration_time', unixNow + data.expires_in);
+    cookies.set('token_type', data.token_type);
 
-        // if (!res.ok) {
-        //   let err = new Error(res.statusText);
-        //   throw err;
-        // }
-    } catch (e) {
-    }
-
+    return res.status(200).json(data);
 }

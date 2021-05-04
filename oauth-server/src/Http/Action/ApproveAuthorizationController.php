@@ -8,7 +8,6 @@ use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Psr7\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ApproveAuthorizationController
@@ -22,6 +21,9 @@ class ApproveAuthorizationController
         $this->session = $session;
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $this->assertValidAuthToken($request, $this->session);
@@ -35,6 +37,9 @@ class ApproveAuthorizationController
         return $this->server->completeAuthorizationRequest($authRequest, $response);
     }
 
+    /**
+     * @throws Exception
+     */
     private function assertValidAuthToken(ServerRequestInterface $request, SessionInterface $session)
     {
         $reqParams = $request->getParsedBody();

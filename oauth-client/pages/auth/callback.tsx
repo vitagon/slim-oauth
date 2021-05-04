@@ -28,7 +28,7 @@ class Callback extends React.Component<any, any> {
             await Http.post('/auth/token', { code: router.query.code });
         } catch (e) {
             alert('Invalid code.');
-            window.location.href = router.query.cur_url;
+            window.location.href = '/';
         }
 
         if (router.query.cur_url && !router.query.cur_url.startsWith('/')) {

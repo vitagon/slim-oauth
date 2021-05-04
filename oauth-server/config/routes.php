@@ -36,9 +36,9 @@ return static function (App $app): void {
 
     $app->group('/oauth', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $app) {
         $group->post('/access_token', AccessTokenAction::class);
-        $group->get('/authorize', AuthorizationController::class);
-        $group->post('/authorize', ApproveAuthorizationController::class);
-    })->addMiddleware($webAuthMiddleware);
+        $group->get('/authorize', AuthorizationController::class)->addMiddleware($webAuthMiddleware);
+        $group->post('/authorize', ApproveAuthorizationController::class)->addMiddleware($webAuthMiddleware);
+    });
 
     $app->get('/jwt', JwtAction::class);
 

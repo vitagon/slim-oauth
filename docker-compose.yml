@@ -61,6 +61,7 @@ services:
       APP_DEBUG: 1
       APP_URL: 'http://company.loc'
       PHP_IDE_CONFIG: serverName=Docker
+      APP_FRONT_DOMAIN: 'http://client.loc'
     depends_on:
       - mysql
     volumes:
@@ -112,9 +113,15 @@ services:
       - ./oauth-client:/app
     command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run dev"
     tty: true
+    # Expose default Node.js debug port
+    ports:
+      - 9229:9229
     environment:
-      AUTH_SERVER_URL: 'http://backend_nginx/api'
-      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://company.loc/api'
+      AUTH_SERVER_URL: 'http://backend_nginx'
+      CLIENT_SECRET: 'oursecret'
+      NEXT_PUBLIC_AUTH_SERVER_URL: 'http://company.loc'
+      NEXT_CLIENT_ID: '1'
+      NEXT_REDIRECT_URI: 'http://client.loc/auth/callback'
 
   client_node-cli:
     build:

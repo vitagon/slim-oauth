@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Column;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity()
@@ -50,6 +51,7 @@ class AuthCode
      */
     public ?DateTimeImmutable $expiresAt;
 
+    #[Pure]
     public static function create(string $id, Client $client, User $user, string $scopes, ?DateTimeImmutable $expiresAt): self
     {
         $authCode = new self();

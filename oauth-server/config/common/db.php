@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,25 +45,18 @@ return [
     ],
 
     EntityManagerInterface::class => function (ContainerInterface $container) {
+        $settings = $container->get('config')['db']['doctrine'];
+
+        $settings['cache_dir'] ? new FilesystemCache($settings['cache_dir']) : new ArrayCache();
         $config = Setup::createAnnotationMetadataConfiguration(
             $container->get('config')['db']['doctrine']['metadata_dirs'],
             $container->get('config')['db']['doctrine']['dev_mode'],
+            null,
+            null,
+            false,
         );
 
         $config->setNamingStrategy(new UnderscoreNamingStrategy());
-
-        $config->setMetadataDriverImpl(
-            new AnnotationDriver(
-                new AnnotationReader(),
-                $container->get('config')['db']['doctrine']['metadata_dirs']
-            )
-        );
-
-        $config->setMetadataCacheImpl(
-            new FilesystemCache(
-                $container->get('config')['db']['doctrine']['cache_dir']
-            )
-        );
 
         return EntityManager::create(
             $container->get('config')['db']['doctrine']['connection'],

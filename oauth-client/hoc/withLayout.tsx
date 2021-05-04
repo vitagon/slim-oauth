@@ -1,6 +1,5 @@
 import React from 'react';
 import DefaultLayout from '@/layouts/default/Default';
-import Http from '@/http';
 import FullPage from '@/layouts/full-page/FullPage';
 
 export const Layouts = {

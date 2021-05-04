@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Column;
 
 /**
  * @ORM\Entity()
@@ -20,16 +18,14 @@ class RefreshToken
 {
     /**
      * @Id()
-     * @GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column
      */
-    public int $id;
+    public string $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AccessToken")
-     * @ORM\JoinColumn(name="access_token_id", referencedColumnName="id")
+     * @ORM\Column
      */
-    public AccessToken $accessToken;
+    public string $accessTokenId;
 
     /**
      * @ORM\Column(type="boolean")
@@ -37,7 +33,7 @@ class RefreshToken
     public bool $revoked;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    public DateTime $expiresAt;
+    public DateTimeImmutable $expiresAt;
 }

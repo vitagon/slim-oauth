@@ -8,10 +8,11 @@ use App\Http\Kernel\JsonResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class OptionsAction implements RequestHandlerInterface
+class OptionsAction
 {
-    public function handle(Request $request): Response
+    public function __invoke(Request $request, ResponseInterface $response): Response
     {
         return new JsonResponse([]);
     }

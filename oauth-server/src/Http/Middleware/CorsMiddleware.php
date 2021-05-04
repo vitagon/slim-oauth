@@ -6,13 +6,12 @@ namespace App\Http\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Routing\RouteContext;
 
-class CorsMiddleware implements MiddlewareInterface
+class CorsMiddleware
 {
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $routeContext = RouteContext::fromRequest($request);
         $routingResults = $routeContext->getRoutingResults();
@@ -21,10 +20,13 @@ class CorsMiddleware implements MiddlewareInterface
 
         $response = $handler->handle($request);
 
-        $response = $response->withHeader('Access-Control-Allow-Origin', getenv('APP_FRONT_DOMAIN'));
-        $response = $response->withHeader('Access-Control-Allow-Headers', $requestHeaders);
-        $response = $response->withHeader('Access-Control-Allow-Methods', implode(',', $methods));
-        $response = $response->withHeader('Access-Control-Allow-Credentials','true');
+        $allowedDomain = getenv('APP_FRONT_DOMAIN');
+        if ($allowedDomain) {
+            $response = $response->withHeader('Access-Control-Allow-Origin', $allowedDomain);
+            $response = $response->withHeader('Access-Control-Allow-Headers', $requestHeaders);
+            $response = $response->withHeader('Access-Control-Allow-Methods', implode(',', $methods));
+            $response = $response->withHeader('Access-Control-Allow-Credentials','true');
+        }
 
         return $response;
     }

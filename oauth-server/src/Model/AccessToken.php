@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Model;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Column;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity()
@@ -18,10 +19,9 @@ class AccessToken
 {
     /**
      * @Id()
-     * @GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
-    public int $id;
+    public string $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -51,17 +51,40 @@ class AccessToken
     public bool $revoked;
 
     /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    public DateTimeImmutable $expiresAt;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    public DateTimeImmutable $createdAt;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     public DateTime $updatedAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    public DateTime $createdAt;
+    #[Pure]
+    public static function create(
+        string $id,
+        Client $client,
+        User $user,
+        string $scopes,
+        DateTimeImmutable $expiresAt,
+        DateTimeImmutable $createdAt,
+        DateTime $updatedAt,
+    ): self {
+        $accessToken = new self();
+        $accessToken->id = $id;
+        $accessToken->client = $client;
+        $accessToken->user = $user;
+        $accessToken->scopes = $scopes;
+        $accessToken->revoked = false;
+        $accessToken->expiresAt = $expiresAt;
+        $accessToken->createdAt = $createdAt;
+        $accessToken->updatedAt = $updatedAt;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    public DateTime $expiresAt;
+        return $accessToken;
+    }
 }

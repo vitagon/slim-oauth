@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\CorsMiddleware;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 use DI\Bridge\Slim\Bridge as AppFactory;

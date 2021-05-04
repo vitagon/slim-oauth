@@ -1,4 +1,4 @@
-import Http from '@/http';
+import Http from '@/http/authHttp';
 
 export async function getUser(cookie) {
     let data = null;

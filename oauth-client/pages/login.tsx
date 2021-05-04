@@ -1,7 +1,5 @@
 import React from 'react';
 import styles from '@/styles/Login.module.scss';
-import classNames from 'classnames';
-import Http from '@/http';
 import { withRouter } from 'next/router';
 import FullPage from '@/layouts/full-page/FullPage';
 

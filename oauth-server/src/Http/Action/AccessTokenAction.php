@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Action;
 
+use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
@@ -27,7 +28,7 @@ class AccessTokenAction
         } catch (OAuthServerException $exception) {
             // All instances of OAuthServerException can be formatted into a HTTP response
             return $exception->generateHttpResponse($response);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             // Unknown exception
             $body = new Stream(fopen('php://temp', 'r+'));
             $body->write($exception->getMessage());

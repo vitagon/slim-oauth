@@ -8,6 +8,8 @@ use App\OAuth\Dto\AuthCodeDto;
 use App\OAuth\Model\AuthCodeEntity;
 use App\OAuth\Trait\FormatScopesForStorage;
 use App\Repository\AuthCodeRepository as AuthCodeModelRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use JetBrains\PhpStorm\Pure;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -22,6 +24,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
         $this->authCodes = $authCodes;
     }
 
+    #[Pure]
     public function getNewAuthCode(): AuthCodeEntityInterface
     {
         return new AuthCodeEntity();
@@ -48,13 +51,20 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
         $this->authCodes->save($dto);
     }
 
-    public function revokeAuthCode($code)
+    /**
+     * @param string $codeId
+     * @throws NonUniqueResultException
+     */
+    public function revokeAuthCode($codeId): void
     {
-        $authCode = $this->authCodes->getById($code);
+        $authCode = $this->authCodes->getById($codeId);
         $authCode->revoked = true;
         $this->authCodes->update($authCode);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function isAuthCodeRevoked($codeId): bool
     {
         $authCode = $this->authCodes->getById($codeId);
