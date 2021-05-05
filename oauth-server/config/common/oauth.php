@@ -62,7 +62,7 @@ return [
             $clientRepository,
             $accessTokenRepository,
             $scopeRepository,
-            $privateKey,
+            new \League\OAuth2\Server\CryptKey($privateKey,null, false),
             Key::loadFromAsciiSafeString($container->get('config')['oauth']['encryption_key'])
         );
 

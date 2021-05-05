@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\AccessToken;
-use App\Model\AuthCode;
 use App\Model\Client;
 use App\Model\User;
 use App\OAuth\Dto\AccessTokenDto;
-use App\OAuth\Dto\AuthCodeDto;
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\ORMException;
 
 class AccessTokenRepository
 {
@@ -25,6 +24,9 @@ class AccessTokenRepository
         $this->em = $em;
     }
 
+    /**
+     * @throws ORMException
+     */
     public function save(AccessTokenDto $dto): void
     {
         /** @var Client $client */
@@ -38,12 +40,6 @@ class AccessTokenRepository
         $updatedAt = new DateTime();
         $accessToken = AccessToken::create($dto->id, $client, $user, $dto->scopes, $expiresAt, $createdAt, $updatedAt);
         $this->em->persist($accessToken);
-        $this->em->flush();
-    }
-
-    public function update(AuthCode $authCode): void
-    {
-        $this->em->persist($authCode);
         $this->em->flush();
     }
 

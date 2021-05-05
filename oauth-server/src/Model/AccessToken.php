@@ -38,7 +38,7 @@ class AccessToken
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    public string $name;
+    public ?string $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -86,5 +86,10 @@ class AccessToken
         $accessToken->updatedAt = $updatedAt;
 
         return $accessToken;
+    }
+
+    public function revoke(): void
+    {
+        $this->revoked = true;
     }
 }

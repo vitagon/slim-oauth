@@ -18,7 +18,7 @@ export default async (req, res) => {
             code: req.body.code,
         }, {
             headers: {
-                cookie: req.headers.cookie
+                cookie
             }
         });
         data = tokenResponse.data;

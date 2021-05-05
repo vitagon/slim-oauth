@@ -9,6 +9,9 @@ use App\OAuth\Model\AccessTokenEntity;
 use App\OAuth\Trait\FormatScopesForStorage;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\ORMException;
 use JetBrains\PhpStorm\Pure;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -20,10 +23,12 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     use FormatScopesForStorage;
 
     private AccessTokenModelRepository $repository;
+    private EntityManagerInterface $em;
 
-    public function __construct(AccessTokenModelRepository $repository)
+    public function __construct(AccessTokenModelRepository $repository, EntityManagerInterface $em)
     {
         $this->repository = $repository;
+        $this->em = $em;
     }
 
     #[Pure]
@@ -39,6 +44,9 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         );
     }
 
+    /**
+     * @throws ORMException
+     */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
         $this->repository->save(AccessTokenDto::create(
@@ -53,13 +61,25 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         ));
     }
 
-    public function revokeAccessToken($tokenId)
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function revokeAccessToken($tokenId): void
     {
-        // TODO: Implement revokeAccessToken() method.
+        $accessToken = $this->repository->getById($tokenId);
+        if ($accessToken) {
+            $accessToken->revoke();
+            $this->em->persist($accessToken);
+            $this->em->flush();
+        }
     }
 
-    public function isAccessTokenRevoked($tokenId)
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function isAccessTokenRevoked($tokenId): bool
     {
-
+        $accessToken = $this->repository->getById($tokenId);
+        return $accessToken->revoked;
     }
 }
