@@ -6,6 +6,7 @@ namespace App\OAuth\Repository;
 
 use App\OAuth\Model\ScopeEntity;
 use App\Repository\ScopeRepository as ScopeModelRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 
@@ -18,9 +19,13 @@ class ScopeRepository implements ScopeRepositoryInterface
         $this->scopes = $scopes;
     }
 
-    public function getScopeEntityByIdentifier($identifier)
+    /**
+     * @param string $identifier
+     * @throws NonUniqueResultException
+     */
+    public function getScopeEntityByIdentifier($identifier): ?ScopeEntity
     {
-        $scope = $this->scopes->getByName((string)$identifier);
+        $scope = $this->scopes->getById($identifier);
         if (!$scope) {
             return null;
         }

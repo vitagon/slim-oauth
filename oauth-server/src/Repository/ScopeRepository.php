@@ -18,34 +18,17 @@ class ScopeRepository
     }
 
     /**
-     * @param int $id
+     * @param string $id Scope name
      * @return Scope|null
      * @throws NonUniqueResultException
      */
-    public function getById(int $id): ?Scope
+    public function getById(string $id): ?Scope
     {
         $query = $this->em->createQueryBuilder()
             ->select('s')
             ->from(Scope::class, 's')
             ->where('s.id = :id')
             ->setParameter('id', $id)
-            ->getQuery();
-
-        return $query->getOneOrNullResult();
-    }
-
-    /**
-     * @param string $name
-     * @return Scope|null
-     * @throws NonUniqueResultException
-     */
-    public function getByName(string $name): ?Scope
-    {
-        $query = $this->em->createQueryBuilder()
-            ->select('s')
-            ->from(Scope::class, 's')
-            ->where('s.name = :name')
-            ->setParameter('name', $name)
             ->getQuery();
 
         return $query->getOneOrNullResult();

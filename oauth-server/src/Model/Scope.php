@@ -6,7 +6,6 @@ namespace App\Model;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 
 /**
@@ -17,15 +16,9 @@ class Scope
 {
     /**
      * @Id()
-     * @GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
-    public int $id;
-
-    /**
-     * @ORM\Column(type="string", unique=true)
-     */
-    public string $name;
+    public string $id;
 
     /**
      * @ORM\Column(type="string", nullable=true)

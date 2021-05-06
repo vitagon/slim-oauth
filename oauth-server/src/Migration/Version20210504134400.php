@@ -20,8 +20,8 @@ final class Version20210504134400 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE refresh_tokens DROP FOREIGN KEY FK_9BACE7E12CCB2688');
         $this->addSql('ALTER TABLE access_tokens CHANGE id id VARCHAR(255) NOT NULL, CHANGE created_at created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', CHANGE expires_at expires_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
-//        $this->addSql('ALTER TABLE refresh_tokens DROP FOREIGN KEY FK_9BACE7E12CCB2688');
         $this->addSql('ALTER TABLE refresh_tokens CHANGE id id VARCHAR(255) NOT NULL, CHANGE access_token_id access_token_id VARCHAR(255) NOT NULL, CHANGE expires_at expires_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
     }
 

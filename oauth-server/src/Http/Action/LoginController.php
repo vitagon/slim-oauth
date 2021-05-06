@@ -12,6 +12,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpException;
 use Slim\Views\Twig;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class LoginController extends BaseController
 {
@@ -26,6 +29,11 @@ class LoginController extends BaseController
         $this->view = $view;
     }
 
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
     public function show(Response $response, SecurityContext $securityContext): Response
     {
         if ($securityContext->getUser()) {
@@ -35,6 +43,9 @@ class LoginController extends BaseController
         return $this->view->render($response, 'login.html.twig');
     }
 
+    /**
+     * @throws HttpException
+     */
     public function login(Request $request, Response $response): Response
     {
         try {

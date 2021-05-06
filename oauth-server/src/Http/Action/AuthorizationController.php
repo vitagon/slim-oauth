@@ -9,7 +9,9 @@ use App\Http\Security\SecurityContext;
 use App\OAuth\Model\UserEntity;
 use App\Repository\ClientRepository;
 use App\Repository\ScopeRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
+use JsonException;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
@@ -44,6 +46,9 @@ class AuthorizationController
         $this->session = $session;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         try {
@@ -93,14 +98,17 @@ class AuthorizationController
         return $this->server->completeAuthorizationRequest($authRequest, $response);
     }
 
-    private function parseScopes(AuthorizationRequest $authRequest)
+    /**
+     * @throws NonUniqueResultException
+     */
+    private function parseScopes(AuthorizationRequest $authRequest): array
     {
         $scopes = $authRequest->getScopes();
 
         $scopesArr = [];
         if (count($scopes)) {
             foreach ($scopes as $scope) {
-                $scope = $this->scopeRepository->getById((int)$scope->getIdentifier());
+                $scope = $this->scopeRepository->getById($scope->getIdentifier());
                 $scopesArr[] = $scope->description;
             }
         }

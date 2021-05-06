@@ -12,17 +12,15 @@ class ScopeEntity implements ScopeEntityInterface
 {
     use EntityTrait;
 
-    private string $name;
     private string $description;
 
     public function __construct(Scope $scope)
     {
         $this->setIdentifier($scope->id);
-        $this->name = $scope->name;
     }
 
     public function jsonSerialize()
     {
-        return $this->name;
+        return $this->getIdentifier();
     }
 }
