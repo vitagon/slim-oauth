@@ -30,8 +30,7 @@ return static function (App $app): void {
 
     $app->group('/api', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $oAuthMiddleware) {
         $group->get('/profile', ProfileAction::class)->addMiddleware($webAuthMiddleware);
-//        $group->get('/client', ClientAction::class)->addMiddleware($oAuthMiddleware);
-        $group->get('/client', ClientAction::class);
+        $group->get('/client', ClientAction::class)->addMiddleware($oAuthMiddleware);
         $group->get('/dbtest', DbTestAction::class);
     });
 

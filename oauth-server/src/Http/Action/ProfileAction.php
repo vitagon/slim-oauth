@@ -5,26 +5,29 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface;
+use App\Http\Security\SecurityContext;
+use JsonException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class ProfileAction implements RequestHandlerInterface
+class ProfileAction
 {
     private LoggerInterface $logger;
-    private SessionInterface $session;
+    private SecurityContext $securityContext;
 
-    public function __construct(LoggerInterface $logger, SessionInterface $session)
+    public function __construct(LoggerInterface $logger, SecurityContext $securityContext)
     {
         $this->logger = $logger;
-        $this->session = $session;
+        $this->securityContext = $securityContext;
     }
 
-    public function handle(Request $request): Response
+    /**
+     * @throws JsonException
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $user = $this->session->get('user');
+        $user = $this->securityContext->getUser();
 
         return new JsonResponse($user);
     }
