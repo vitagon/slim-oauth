@@ -1,3 +1,13 @@
+stop-local-apps:
+	-sudo systemctl stop nginx.service
+	-sudo systemctl stop openresty.service
+	-sudo systemctl stop mysql.service
+
+start-local-apps:
+	-sudo systemctl start nginx.service
+	-sudo systemctl start openresty.service
+	-sudo systemctl start mysql.service
+
 docker-up:
 	docker-compose build
 	docker-compose up
