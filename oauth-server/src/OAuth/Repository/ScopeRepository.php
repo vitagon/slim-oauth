@@ -25,12 +25,17 @@ class ScopeRepository implements ScopeRepositoryInterface
      */
     public function getScopeEntityByIdentifier($identifier): ?ScopeEntity
     {
+        if ($identifier === '*') {
+            return new ScopeEntity($identifier);
+        }
+
+        // check if scope exists
         $scope = $this->scopes->getById($identifier);
         if (!$scope) {
             return null;
         }
 
-        return new ScopeEntity($scope);
+        return new ScopeEntity($scope->id);
     }
 
     public function finalizeScopes(

@@ -106,11 +106,15 @@ class AuthorizationController
         $scopes = $authRequest->getScopes();
 
         $scopesArr = [];
-        if (count($scopes)) {
-            foreach ($scopes as $scope) {
-                $scope = $this->scopeRepository->getById($scope->getIdentifier());
-                $scopesArr[] = $scope->description;
+        foreach ($scopes as $scope) {
+            if ($scope->getIdentifier() === '*') {
+                $scopeModels = $this->scopeRepository->getAll();
+                $scopesArr = array_map(fn($s) => $s->description, $scopeModels);
+                break;
             }
+
+            $scopeModel = $this->scopeRepository->getById($scope->getIdentifier());
+            $scopesArr[] = $scopeModel->description;
         }
 
         return $scopesArr;

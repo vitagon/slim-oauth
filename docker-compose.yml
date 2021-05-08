@@ -120,8 +120,8 @@ services:
       AUTH_SERVER_URL: 'http://backend_nginx'
       CLIENT_SECRET: 'oursecret'
       NEXT_PUBLIC_AUTH_SERVER_URL: 'http://company.loc'
-      NEXT_CLIENT_ID: '1'
-      NEXT_REDIRECT_URI: 'http://client.loc/auth/callback'
+      NEXT_PUBLIC_CLIENT_ID: '1'
+      NEXT_PUBLIC_REDIRECT_URI: 'http://client.loc/auth/callback'
 
   client_node-cli:
     build:

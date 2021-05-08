@@ -33,4 +33,14 @@ class ScopeRepository
 
         return $query->getOneOrNullResult();
     }
+
+    public function getAll()
+    {
+        $query = $this->em->createQueryBuilder()
+            ->select('s')
+            ->from(Scope::class, 's')
+            ->getQuery();
+
+        return $query->getResult();
+    }
 }

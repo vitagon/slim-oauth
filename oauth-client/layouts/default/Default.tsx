@@ -11,8 +11,18 @@ class DefaultLayout extends React.Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
-            navExpanded: false
+            navExpanded: false,
+            loginUrl: '',
         };
+
+        let authParams = new URLSearchParams({
+            response_type: 'code',
+            client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
+            redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI,
+            scope: '*',
+        });
+        // @ts-ignore
+        this.state.loginUrl = `${process.env.NEXT_PUBLIC_AUTH_SERVER_URL}/oauth/authorize?` + authParams.toString();
     }
 
     componentDidMount() {
@@ -58,7 +68,7 @@ class DefaultLayout extends React.Component<any, any> {
 
                         <Nav>
                             {!this.props.user && (
-                                <Link href="/login">
+                                <Link href={this.state.loginUrl}>
                                     <a className="nav-link" onClick={this.closeNav}>Login</a>
                                 </Link>
                             )}

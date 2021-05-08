@@ -12,14 +12,10 @@ export default async (req, res) => {
     try {
         let tokenResponse = await authHttp.post('/oauth/access_token', {
             grant_type: 'authorization_code',
-            client_id: process.env.NEXT_CLIENT_ID,
+            client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
             client_secret: process.env.CLIENT_SECRET,
-            redirect_uri: process.env.NEXT_REDIRECT_URI,
+            redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI,
             code: req.body.code,
-        }, {
-            headers: {
-                cookie
-            }
         });
         data = tokenResponse.data;
     } catch (e) {

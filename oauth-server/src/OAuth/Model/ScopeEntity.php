@@ -12,11 +12,9 @@ class ScopeEntity implements ScopeEntityInterface
 {
     use EntityTrait;
 
-    private string $description;
-
-    public function __construct(Scope $scope)
+    public function __construct(string $id)
     {
-        $this->setIdentifier($scope->id);
+        $this->setIdentifier($id);
     }
 
     public function jsonSerialize()
