@@ -117,8 +117,10 @@ services:
     ports:
       - 9229:9229
     environment:
+      API_URL: 'http://localhost:3000'
       AUTH_SERVER_URL: 'http://backend_nginx'
       CLIENT_SECRET: 'oursecret'
+      NEXT_PUBLIC_API_URL: 'http://client.loc'
       NEXT_PUBLIC_AUTH_SERVER_URL: 'http://company.loc'
       NEXT_PUBLIC_CLIENT_ID: '1'
       NEXT_PUBLIC_REDIRECT_URI: 'http://client.loc/auth/callback'

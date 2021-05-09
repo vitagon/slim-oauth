@@ -1,9 +1,13 @@
-import Http from '@/http/authHttp';
+import Http from '@/http';
 
 export async function getUser(cookie) {
+    if (typeof cookie === 'undefined') {
+        cookie = null;
+    }
+
     let data = null;
     try {
-        let res = await Http.get('/profile', {
+        let res = await Http.get('/user', {
             headers: { cookie }
         });
         data = res.data;
@@ -12,5 +16,5 @@ export async function getUser(cookie) {
         return null;
     }
 
-    return data.user;
+    return data;
 }

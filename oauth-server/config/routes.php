@@ -30,14 +30,14 @@ return static function (App $app): void {
 
     $app->group('/api', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $oAuthMiddleware) {
         $group->get('/profile', ProfileAction::class)->addMiddleware($webAuthMiddleware);
-        $group->get('/client', ClientAction::class)->addMiddleware($oAuthMiddleware);
         $group->get('/dbtest', DbTestAction::class);
     });
 
-    $app->group('/oauth', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $app) {
+    $app->group('/oauth', function (RouteCollectorProxy $group) use ($webAuthMiddleware, $oAuthMiddleware) {
         $group->post('/access_token', AccessTokenAction::class);
         $group->get('/authorize', AuthorizationController::class)->addMiddleware($webAuthMiddleware);
         $group->post('/authorize', ApproveAuthorizationController::class)->addMiddleware($webAuthMiddleware);
+        $group->get('/user', ClientAction::class)->addMiddleware($oAuthMiddleware);
     });
 
     $app->get('/jwt', JwtAction::class);
