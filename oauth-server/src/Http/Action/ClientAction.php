@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace App\Http\Action;
 
 use App\Http\Kernel\JsonResponse;
-use JsonException;
+use App\Http\Security\OAuthSecurityContext;
+use OAuthException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ClientAction
 {
     /**
-     * @throws JsonException
+     * @throws OAuthException
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, OAuthSecurityContext $securityContext): ResponseInterface
     {
-        return new JsonResponse($request->getAttributes());
+        return new JsonResponse($securityContext->getUser($request));
     }
 }

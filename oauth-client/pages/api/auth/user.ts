@@ -1,4 +1,4 @@
-import authHttp from "@/http/authHttp";
+import authHttp from '@/http/authHttp';
 import Cookies from 'cookies';
 
 export default async (req, res) => {
