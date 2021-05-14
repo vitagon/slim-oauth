@@ -1,20 +1,13 @@
 import React from 'react';
 import DefaultLayout from '@/layouts/default/Default';
-import { wrapper } from '@/store';
 import { connect } from 'react-redux';
-import { getUser } from '@/services/AuthService';
-import types from '@/store/auth/types';
 import { bindActionCreators } from 'redux';
-import CookieHolder from '@/http/cookieHolder';
-import Cookies from 'cookies';
-import getServerSidePropsWrap from '@/http/getServerSidePropsWrap';
+import combine from '@/http/hoc/server-side-props/combine';
+import { GetServerSidePropsContext } from 'next';
+import withUser from '@/http/hoc/server-side-props/withUser';
+import withCookies from '@/http/hoc/server-side-props/withCookies';
 
 class Home extends React.Component<any, any> {
-    componentDidMount() {
-        let o = this.props;
-        debugger;
-    }
-
     render() {
         return (
             <DefaultLayout>
@@ -31,22 +24,11 @@ class Home extends React.Component<any, any> {
     }
 }
 
-// export const getServerSideProps = wrapper.getServerSideProps(
-export const getServerSideProps = getServerSidePropsWrap(
-    async ({ store , req, res}) => {
-        CookieHolder.cookies = new Cookies(req, res);
-        let user = await getUser(req.headers.cookie);
-
-        if (user) {
-            store.dispatch({
-                type: types.SET_USER,
-                payload: user
-            })
-        }
-
+export const getServerSideProps = combine(
+    withUser(),
+    async (context: GetServerSidePropsContext) => {
         return {
             props: {
-                comp: 'faa'
             }
         }
     }

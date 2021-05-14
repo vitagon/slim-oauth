@@ -31,7 +31,7 @@ export default async (req, res) => {
 
     const cookies = new Cookies(req, res);
     cookies.set('access_token', data.access_token);
-    cookies.set('refresh_token', data.access_token);
+    cookies.set('refresh_token', data.refresh_token);
     cookies.set('expiration_time', unixNow + data.expires_in);
     cookies.set('token_type', data.token_type);
 

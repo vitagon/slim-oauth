@@ -84,7 +84,7 @@ return [
         $grant->setRefreshTokenTTL(new DateInterval('P1M')); // refresh tokens will expire after 1 month
         $server->enableGrantType(
             $grant,
-            new DateInterval('PT1H') // access tokens will expire after 1 hour
+            new DateInterval('PT1M') // access tokens will expire after 1 hour
         );
 
         $refreshTokenGrant = new RefreshTokenGrant($refreshTokenRepository);

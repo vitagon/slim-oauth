@@ -2,16 +2,17 @@ import authHttp from '@/http/authHttp';
 import Cookies from 'cookies';
 
 export default async (req, res) => {
-    let cookie = null;
-    if (typeof req.headers.cookie !== 'undefined') {
-        cookie = req.headers.cookie;
+    const cookies = new Cookies(req, res);
+    let refreshToken = cookies.get('refresh_token');
+    if (!refreshToken) {
+        return res.status(400).json({ error: 'refresh_token was not found in cookies' });
     }
 
     let data = null;
     try {
         let tokenResponse = await authHttp.post('/oauth/access_token', {
             grant_type: 'refresh_token',
-            refresh_token: req.body.code,
+            refresh_token: refreshToken,
             client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
             client_secret: process.env.CLIENT_SECRET,
             scope: '*'
@@ -28,11 +29,10 @@ export default async (req, res) => {
 
     let unixNow = Math.floor(Date.now() / 1000);
 
-    const cookies = new Cookies(req, res);
     cookies.set('access_token', data.access_token);
-    cookies.set('refresh_token', data.access_token);
+    cookies.set('refresh_token', data.refresh_token);
     cookies.set('expiration_time', unixNow + data.expires_in);
     cookies.set('token_type', data.token_type);
 
-    return res.status(200).end();
+    return res.json(data);
 }
